@@ -1,0 +1,24 @@
+{
+  "variables": {
+    "access_key": "{{env `APSARASTACK_ACCESS_KEY`}}",
+    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}"
+  },
+  "builders": [{
+    "type":"apsarastack-ecs",
+    "access_key":"{{user `access_key`}}",
+    "secret_key":"{{user `secret_key`}}",
+    "region": "cn-wulan-env82-d01",
+    "insecure": true,
+    "proxy": "http://100.67.27.224:58201",
+    "endpoint": "server.asapi.cn-wulan-env82-d01.intra.env17e.shuguang.com/asapi/v3",
+    "department": "11",
+    "resource_group": "27",
+    "image_name":"packer_with_data_disk",
+    "source_image":"centos_6_08_32_40G_alibase_20170710.raw",
+    "communicator": "none",
+    "instance_type":"ecs.e4.small",
+    "internet_charge_type":"PayByTraffic",
+    "io_optimized":"true",
+    "image_disk_mappings":[{"disk_name":"data1","disk_size":20},{"disk_name":"data1","disk_size":20,"disk_device":"/dev/xvdz"}]
+  }]
+}
