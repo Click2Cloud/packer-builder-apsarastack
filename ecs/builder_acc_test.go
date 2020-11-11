@@ -122,8 +122,8 @@ func checkImageDisksSettings() builderT.TestCheckFunc {
 		//config := state.Get("config").(*Config)
 
 		describeImagesRequest := ecs.CreateDescribeImagesRequest()
-		describeImagesRequest.Headers = map[string]string{"RegionId": "cn-wulan-env82-d01"}
-		describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": "EuKRGrBTs7ZUyg2AvsmQ7OrwXQrkTq", "Product": "ecs", "Department": "11", "ResourceGroup": "27"}
+		//describeImagesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
+		//describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
 		describeImagesRequest.RegionId = defaultTestRegion
 		describeImagesRequest.ImageId = imageId

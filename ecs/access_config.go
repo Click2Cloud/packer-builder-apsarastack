@@ -116,14 +116,14 @@ func (c *ApsaraStackAccessConfig) Client() (*ClientWrapper, error) {
 	if c.client != nil {
 		return c.client, nil
 	}
-	endpoints.AddEndpointMapping(c.ApsaraStackRegion, "ECS", "server.asapi.cn-wulan-env82-d01.intra.env17e.shuguang.com/asapi/v3")
+	endpoints.AddEndpointMapping(c.ApsaraStackRegion, "ECS", c.Endpoint)
 	//endpoints.AddEndpointMapping(c.ApsaraStackRegion,"OSS","oss-cn-qingdao-env66-d01-a.intra.env66.shuguang.com")
 	//	client, err := ecs.NewClientWithAccessKey(c.ApsaraStackRegion,c.ApsaraStackAccessKey,c.ApsaraStackSecretKey)
 	//	client, err := ecs.NewClientWithOptions(c.ApsaraStackRegion, c.getSdkConfig().WithTimeout(time.Duration(60)*time.Second), credentials.NewAccessKeyCredential(c.ApsaraStackRegion, c.ApsaraStackAccessKey))
 	if err != nil {
 		return nil, fmt.Errorf("unable to initialize the ECS client: %#v", err)
 	}
-	client.Domain = "server.asapi.cn-wulan-env82-d01.intra.env17e.shuguang.com/asapi/v3"
+	client.Domain = c.Endpoint
 	//client.Domain = "oss-cn-qingdao-env66-d01-a.intra.env66.shuguang.com"
 	//c.OSS_Endpoint= "oss-cn-qingdao-env66-d01-a.intra.env66.shuguang.com"
 	//c.Product = "ecs"
@@ -203,7 +203,7 @@ func (c *ApsaraStackAccessConfig) getSupportedRegions() ([]string, error) {
 
 	regionsRequest := ecs.CreateDescribeRegionsRequest()
 	regionsRequest.Headers = map[string]string{"RegionId": c.ApsaraStackRegion}
-	regionsRequest.QueryParams = map[string]string{"AccessKeySecret": c.ApsaraStackSecretKey, "Product": "ecs", "Department": "11", "ResourceGroup": "27"}
+	regionsRequest.QueryParams = map[string]string{"AccessKeySecret": c.ApsaraStackSecretKey, "Product": "ecs", "Department": c.Department, "ResourceGroup": c.ResourceGroup}
 
 	regionsResponse, err := client.DescribeRegions(regionsRequest)
 	if err != nil {

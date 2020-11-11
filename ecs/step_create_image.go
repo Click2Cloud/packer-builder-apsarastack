@@ -140,7 +140,6 @@ func (s *stepCreateApsaraStackImage) buildCreateImageRequest(state multistep.Sta
 	request.ImageName = imageName
 	request.ImageVersion = config.ApsaraStackImageVersion
 	request.Description = config.ApsaraStackImageDescription
-
 	if s.ApsaraStackImageIgnoreDataDisks {
 		snapshotId := state.Get("ApsaraStacksnapshot").(string)
 		request.SnapshotId = snapshotId

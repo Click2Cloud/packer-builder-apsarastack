@@ -19,7 +19,7 @@ func (s *stepCheckApsaraStackSourceImage) Run(ctx context.Context, state multist
 
 	describeImagesRequest := ecs.CreateDescribeImagesRequest()
 	describeImagesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
-	describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
+	describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs"}
 	//describeImagesRequest.Headers = map[string]string{"RegionId": }
 	//describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": client.SecretKey, "Product": "ecs"}
 
@@ -28,7 +28,7 @@ func (s *stepCheckApsaraStackSourceImage) Run(ctx context.Context, state multist
 	if config.ApsaraStackSkipImageValidation {
 		describeImagesRequest.ShowExpired = "true"
 	}
-	client.Domain = "server.asapi.cn-wulan-env82-d01.intra.env17e.shuguang.com/asapi/v3"
+	client.Domain = config.Endpoint
 	client.SetHTTPSInsecure(true)
 
 	imagesResponse, err := client.DescribeImages(describeImagesRequest)

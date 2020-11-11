@@ -47,8 +47,8 @@ func (s *stepConfigApsaraStackVSwitch) Run(ctx context.Context, state multistep.
 	}
 	if len(s.VSwitchId) != 0 {
 		describeVSwitchesRequest := vpc.CreateDescribeVSwitchesRequest()
-		describeVSwitchesRequest.Headers = map[string]string{"RegionId": "cn-wulan-env82-d01"}
-		describeVSwitchesRequest.QueryParams = map[string]string{"AccessKeySecret": "EuKRGrBTs7ZUyg2AvsmQ7OrwXQrkTq", "Product": "vpc", "Department": "11", "ResourceGroup": "27"}
+		describeVSwitchesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
+		describeVSwitchesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
 		describeVSwitchesRequest.VpcId = vpcId
 		describeVSwitchesRequest.VSwitchId = s.VSwitchId
@@ -72,8 +72,8 @@ func (s *stepConfigApsaraStackVSwitch) Run(ctx context.Context, state multistep.
 
 	if s.ZoneId == "" {
 		describeZonesRequest := vpc.CreateDescribeZonesRequest()
-		describeZonesRequest.Headers = map[string]string{"RegionId": "cn-wulan-env82-d01"}
-		describeZonesRequest.QueryParams = map[string]string{"AccessKeySecret": "EuKRGrBTs7ZUyg2AvsmQ7OrwXQrkTq", "Product": "vpc", "Department": "11", "ResourceGroup": "27"}
+		describeZonesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
+		describeZonesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
 		describeZonesRequest.RegionId = config.ApsaraStackRegion
 
@@ -147,8 +147,8 @@ func (s *stepConfigApsaraStackVSwitch) Run(ctx context.Context, state multistep.
 	vSwitchId := createVSwitchResponse.(*vpc.CreateVSwitchResponse).VSwitchId
 
 	describeVSwitchesRequest := vpc.CreateDescribeVSwitchesRequest()
-	describeVSwitchesRequest.Headers = map[string]string{"RegionId": "cn-wulan-env82-d01"}
-	describeVSwitchesRequest.QueryParams = map[string]string{"AccessKeySecret": "EuKRGrBTs7ZUyg2AvsmQ7OrwXQrkTq", "Product": "vpc", "Department": "11", "ResourceGroup": "27"}
+	describeVSwitchesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
+	describeVSwitchesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
 	describeVSwitchesRequest.VpcId = vpcId
 	describeVSwitchesRequest.VSwitchId = vSwitchId
@@ -209,8 +209,8 @@ func (s *stepConfigApsaraStackVSwitch) Cleanup(state multistep.StateBag) {
 	_, err = client.WaitForExpected(&WaitForExpectArgs{
 		RequestFunc: func() (responses.AcsResponse, error) {
 			request := vpc.CreateDeleteVSwitchRequest()
-			request.Headers = map[string]string{"RegionId": "cn-wulan-env82-d01"}
-			request.QueryParams = map[string]string{"AccessKeySecret": "EuKRGrBTs7ZUyg2AvsmQ7OrwXQrkTq", "Product": "vpc", "Department": "11", "ResourceGroup": "27"}
+			request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
+			request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
 			request.VSwitchId = s.VSwitchId
 			return vpcclient.DeleteVSwitch(request)
@@ -226,10 +226,10 @@ func (s *stepConfigApsaraStackVSwitch) Cleanup(state multistep.StateBag) {
 
 func (s *stepConfigApsaraStackVSwitch) buildCreateVSwitchRequest(state multistep.StateBag) *vpc.CreateVSwitchRequest {
 	vpcId := state.Get("vpcid").(string)
-
+	config := state.Get("config").(*Config)
 	request := vpc.CreateCreateVSwitchRequest()
-	request.Headers = map[string]string{"RegionId": "cn-wulan-env82-d01"}
-	request.QueryParams = map[string]string{"AccessKeySecret": "EuKRGrBTs7ZUyg2AvsmQ7OrwXQrkTq", "Product": "vpc", "Department": "11", "ResourceGroup": "27"}
+	request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
+	request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
 	request.ClientToken = uuid.TimeOrderedUUID()
 	request.CidrBlock = s.CidrBlock
