@@ -38,17 +38,30 @@ func (s *stepCheckApsaraStackSourceImage) Run(ctx context.Context, state multist
 
 	images := imagesResponse.Images.Image
 
-	// Describe marketplace image
-	describeImagesRequest.ImageOwnerAlias = "system"
-	marketImagesResponse, err := client.DescribeImages(describeImagesRequest)
-	if err != nil {
-		return halt(state, err, "Error querying ApsaraStack system image")
-	}
 
-	marketImages := marketImagesResponse.Images.Image
-	if len(marketImages) > 0 {
-		images = append(images, marketImages...)
-	}
+	// Describe marketplace image
+	{
+	describeImagesRequest.ImageOwnerAlias = "self"
+		marketImagesResponse, err := client.DescribeImages(describeImagesRequest)
+		if err != nil {
+			return halt(state, err, "Error querying ApsaraStack system image")
+		}
+
+		marketImages := marketImagesResponse.Images.Image
+		if len(marketImages) > 0 {
+			images = append(images, marketImages...)
+		}}
+	describeImagesRequest.ImageOwnerAlias = "system"
+		marketImagesResponse, err := client.DescribeImages(describeImagesRequest)
+		if err != nil {
+			return halt(state, err, "Error querying ApsaraStack system image")
+		}
+
+		marketImages := marketImagesResponse.Images.Image
+		if len(marketImages) > 0 {
+			images = append(images, marketImages...)
+		}
+
 
 	if len(images) == 0 {
 		err := fmt.Errorf("No ApsaraStack image was found matching filters: %v", config.ApsaraStackSourceImage)
