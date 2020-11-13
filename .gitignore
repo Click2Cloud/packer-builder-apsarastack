@@ -4,7 +4,7 @@ bin/
 /.gitignore.swp
 .DS_Store
 examples/.DS_Store
-examples/alicloud/.DS_Store
+examples/apsarastack/.DS_Store
 release-tools
 release.sh
 .idea/
