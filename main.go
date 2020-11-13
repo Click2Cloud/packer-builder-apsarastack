@@ -4,7 +4,6 @@ package main
 import (
 	"github.com/aliyun/packer-builder-apsarastack/ecs"
 	"github.com/hashicorp/packer/packer/plugin"
-	//alicloudimport "github.com/hashicorp/packer/post-processor/alicloud-import"
 )
 
 func main() {
@@ -13,6 +12,6 @@ func main() {
 		panic(err)
 	}
 	server.RegisterBuilder(new(ecs.Builder))
-	//server.RegisterPostProcessor(new(apsarastackimport.PostProcessor))
 	server.Serve()
 }
+
