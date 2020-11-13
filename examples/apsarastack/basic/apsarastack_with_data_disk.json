@@ -17,8 +17,10 @@
     "source_image":"centos_6_08_32_40G_alibase_20170710.raw",
     "communicator": "none",
     "instance_type":"ecs.e4.small",
-    "internet_charge_type":"PayByTraffic",
     "io_optimized":"true",
+    "vpc_id": "",
+    "vswitch_id": "",
+    "zone_id":"cn-neimeng-env30-amtest30001-a",
     "image_disk_mappings":[{"disk_name":"data1","disk_size":20},{"disk_name":"data1","disk_size":20,"disk_device":"/dev/xvdz"}]
   }]
 }
