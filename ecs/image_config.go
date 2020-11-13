@@ -127,9 +127,7 @@ type ApsaraStackDiskDevices struct {
 	//     If this option is set to true, the data disk will be encryped and corresponding snapshot in the target image will also be encrypted. By
 	//     default, if this is an extra data disk, Packer will not encrypt the
 	//     data disk. Otherwise, Packer will keep the encryption setting to what
-	//     it was in the source image. Please refer to Introduction of [ECS disk encryption](https://www.alibabacloud.com/help/doc-detail/59643.htm)
-	//     for more details.
-	//
+	//     it was in the source image.
 	ECSImagesDiskMappings []ApsaraStackDiskDevice `mapstructure:"image_disk_mappings" required:"false"`
 }
 
