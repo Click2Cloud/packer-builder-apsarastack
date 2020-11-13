@@ -105,27 +105,6 @@ func TestRunConfigPrepare_UserDataFile(t *testing.T) {
 	}
 }
 
-func TestRunConfigPrepare_TemporaryKeyPairName(t *testing.T) {
-	c := testConfig()
-	c.Comm.SSHTemporaryKeyPairName = ""
-	if err := c.Prepare(nil); len(err) != 0 {
-		t.Fatalf("err: %s", err)
-	}
-
-	if c.Comm.SSHTemporaryKeyPairName == "" {
-		t.Fatal("keypair name is empty")
-	}
-
-	c.Comm.SSHTemporaryKeyPairName = "ssh-key-123"
-	if err := c.Prepare(nil); len(err) != 0 {
-		t.Fatalf("err: %s", err)
-	}
-
-	if c.Comm.SSHTemporaryKeyPairName != "ssh-key-123" {
-		t.Fatal("keypair name does not match")
-	}
-}
-
 func TestRunConfigPrepare_SSHPrivateIp(t *testing.T) {
 	c := testConfig()
 	if err := c.Prepare(nil); len(err) != 0 {
@@ -176,3 +155,4 @@ func TestRunConfigPrepare_DisableStopInstance(t *testing.T) {
 		t.Fatalf("invalid value, expected: %t, actul: %t", false, c.DisableStopInstance)
 	}
 }
+
