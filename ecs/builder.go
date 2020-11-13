@@ -123,7 +123,6 @@ func (b *Builder) Run(ctx context.Context, ui packer.Ui, hook packer.Hook) (pack
 			UserData:                b.config.UserData,
 			UserDataFile:            b.config.UserDataFile,
 			RegionId:                b.config.ApsaraStackRegion,
-			InternetChargeType:      b.config.InternetChargeType,
 			InternetMaxBandwidthOut: b.config.InternetMaxBandwidthOut,
 			InstanceName:            b.config.InstanceName,
 			ZoneId:                  b.config.ZoneId,
@@ -132,7 +131,6 @@ func (b *Builder) Run(ctx context.Context, ui packer.Ui, hook packer.Hook) (pack
 		steps = append(steps, &stepConfigApsaraStackEIP{
 			AssociatePublicIpAddress: b.config.AssociatePublicIpAddress,
 			RegionId:                 b.config.ApsaraStackRegion,
-			InternetChargeType:       b.config.InternetChargeType,
 			InternetMaxBandwidthOut:  b.config.InternetMaxBandwidthOut,
 			SSHPrivateIp:             b.config.SSHPrivateIp,
 		})
