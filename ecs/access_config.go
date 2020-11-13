@@ -48,13 +48,12 @@ type ApsaraStackAccessConfig struct {
 	// STS access token, can be set through template or by exporting as
 	// environment variable such as `export SECURITY_TOKEN=value`.
 	SecurityToken string   `mapstructure:"security_token" required:"false"`
-	AS_Insecure   bool     `mapstructure:"insecure" required:"false"`
-	Proxy         string   `mapstructure:"proxy" required:"false"`
-	Endpoint      string   `mapstructure:"endpoint" required:"false"`
-	OSS_Endpoint  string   `mapstructure:"oss_endpoint" required:"false"`
-	Product       string   `mapstructure:"product" required:"false"`
-	Department    string   `mapstructure:"department" required:"false"`
-	ResourceGroup string   `mapstructure:"resource_group" required:"false"`
+	AS_Insecure   bool     `mapstructure:"insecure" required:"true"`
+	Proxy         string   `mapstructure:"proxy" required:"true"`
+	Endpoint      string   `mapstructure:"endpoint" required:"true"`
+	Product       string   `mapstructure:"product" required:"true"`
+	Department    string   `mapstructure:"department" required:"true"`
+	ResourceGroup string   `mapstructure:"resource_group" required:"true"`
 	BootCommand   []string `mapstructure:"boot_command" required:"false"`
 
 	client *ClientWrapper
@@ -105,7 +104,6 @@ func (c *ApsaraStackAccessConfig) Client() (*ClientWrapper, error) {
 		if c.client != nil {
 			return c.client, nil
 		}
-
 		client.AppendUserAgent(Packer, version.FormattedVersion())
 		client.SetReadTimeout(DefaultequestReadTimeout)
 		c.client = &ClientWrapper{client}
