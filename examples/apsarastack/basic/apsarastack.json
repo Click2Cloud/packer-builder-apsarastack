@@ -8,19 +8,21 @@
       "type": "apsarastack",
       "access_key": "{{user `access_key`}}",
       "secret_key": "{{user `secret_key`}}",
-      "region": "cn-wulan-env82-d01",
+      "region": "cn-neimeng-env30-d01",
       "insecure": true,
-      "proxy": "http://100.67.27.224:58201",
-      "endpoint": "server.asapi.cn-wulan-env82-d01.intra.env17e.shuguang.com/asapi/v3",
-      "department": "11",
-      "resource_group": "27",
-      "image_name": "packer_basicudvx",
-      "instance_type": "ecs.se1.large",
-      "source_image": "win2012r2_9600_x64_dtc_en-us_40G_alibase_20200314.vhd",
-      "internet_charge_type": "PayByTraffic",
+      "proxy": "http://100.67.76.9:53001",
+      "endpoint": "server.asapi.cn-neimeng-env30-d01.intra.env30.shuguang.com/asapi/v3",
+      "department": "54437",
+      "resource_group": "571",
+      "image_name": "packer_basicfortesting",
+      "source_image": "",
+      "instance_type": "ecs.e4.small",
+      "instance_name": "testing123",
       "io_optimized": "true",
+      "vpc_name": "newvpc",
+      "vswitch_name": "vswitchnew",
+      "security_group_name": "newsec",
       "communicator": "none"
-
     }
   ]
 }
