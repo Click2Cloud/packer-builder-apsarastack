@@ -96,7 +96,6 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "source_image":"win2012r2_9600_x64_dtc_en-us_40G_alibase_20200314.vhd",
     "instance_type":"ecs.xn4.small",
     "io_optimized":"true",
-    "internet_charge_type":"PayByTraffic",
     "communicator": "none",
     "user_data_file": "examples/apsarastack/basic/winrm_enable_userdata.ps1"
   }]
