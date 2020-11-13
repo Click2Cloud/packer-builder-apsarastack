@@ -59,7 +59,6 @@ const testBuilderAccBasic = `
 			"instance_type": "ecs.n1.tiny",
 			"source_image":"ubuntu_18_04_64_20G_alibase_20190509.vhd",
 			"io_optimized":"true",
-			"ssh_username":"root",
 			"image_name": "packer-test-basic_{{timestamp}}"
 		}]
 	}`
@@ -83,7 +82,7 @@ const testBuilderAccWithDiskSettings = `
 			"instance_type": "ecs.n1.tiny",
 			"source_image":"ubuntu_18_04_64_20G_alibase_20190509.vhd",
 			"io_optimized":"true",
-			"ssh_username":"root",
+
 			"image_name": "packer-test-withDiskSettings_{{timestamp}}",
 			"system_disk_mapping": {
 				"disk_size": 60
@@ -118,12 +117,12 @@ func checkImageDisksSettings() builderT.TestCheckFunc {
 		imageId := artifact.ApsaraStackImages[defaultTestRegion]
 
 		// describe the image, get block devices with a snapshot
-		client, _ := testAliyunClient()
+		client, _ := testApsaraStackClient()
 		//config := state.Get("config").(*Config)
 
 		describeImagesRequest := ecs.CreateDescribeImagesRequest()
-		//describeImagesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
-		//describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
+		describeImagesRequest.Headers = map[string]string{"RegionId": "cn-wulan-env82-d01"}
+		describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": "EuKRGrBTs7ZUyg2AvsmQ7OrwXQrkTq", "Product": "ecs", "Department": "11", "ResourceGroup": "27"}
 
 		describeImagesRequest.RegionId = defaultTestRegion
 		describeImagesRequest.ImageId = imageId
@@ -215,7 +214,6 @@ const testBuilderAccIgnoreDataDisks = `
 			"instance_type": "ecs.gn5-c8g1.2xlarge",
 			"source_image":"ubuntu_18_04_64_20G_alibase_20190509.vhd",
 			"io_optimized":"true",
-			"ssh_username":"root",
 			"image_name": "packer-test-ignoreDataDisks_{{timestamp}}",
 			"image_ignore_data_disks": true
 		}]
@@ -236,7 +234,7 @@ func checkIgnoreDataDisks() builderT.TestCheckFunc {
 		imageId := artifact.ApsaraStackImages[defaultTestRegion]
 
 		// describe the image, get block devices with a snapshot
-		client, _ := testAliyunClient()
+		client, _ := testApsaraStackClient()
 		//config := state.Get("config").(*Config)
 
 		describeImagesRequest := ecs.CreateDescribeImagesRequest()
@@ -307,7 +305,6 @@ const testBuilderAccRegionCopy = `
 			"instance_type": "ecs.n1.tiny",
 			"source_image":"ubuntu_18_04_64_20G_alibase_20190509.vhd",
 			"io_optimized":"true",
-			"ssh_username":"root",
 			"image_name": "packer-test-regionCopy_{{timestamp}}",
 			"image_copy_regions": ["cn-hangzhou", "cn-shenzhen"],
 			"image_copy_names": ["packer-copy-test-hz_{{timestamp}}", "packer-copy-test-sz_{{timestamp}}"]
@@ -351,7 +348,7 @@ func checkRegionCopy(regions []string) builderT.TestCheckFunc {
 			return fmt.Errorf("following region(s) should be the copying targets but corresponding artifact(s) not found: %#v", regionSet)
 		}
 
-		client, _ := testAliyunClient()
+		client, _ := testApsaraStackClient()
 		for regionId, imageId := range artifact.ApsaraStackImages {
 			describeImagesRequest := ecs.CreateDescribeImagesRequest()
 			describeImagesRequest.RegionId = regionId
@@ -411,7 +408,7 @@ const testBuilderAccForceDelete = `
 			"instance_type": "ecs.n1.tiny",
 			"source_image":"ubuntu_18_04_64_20G_alibase_20190509.vhd",
 			"io_optimized":"true",
-			"ssh_username":"root",
+		
 			"image_force_delete": "%s",
 			"image_name": "packer-test-forceDelete_%s"
 		}]
@@ -438,7 +435,7 @@ const testBuilderAccSharing = `
 			"instance_type": "ecs.n1.tiny",
 			"source_image":"ubuntu_18_04_64_20G_alibase_20190509.vhd",
 			"io_optimized":"true",
-			"ssh_username":"root",
+		
 			"image_name": "packer-test-ECSImageSharing_{{timestamp}}",
 			"image_share_account":["1309208528360047"]
 		}]
@@ -459,7 +456,7 @@ func checkECSImageSharing(uid string) builderT.TestCheckFunc {
 		}
 
 		// describe the image, get block devices with a snapshot
-		client, _ := testAliyunClient()
+		client, _ := testApsaraStackClient()
 
 		describeImageShareRequest := ecs.CreateDescribeImageSharePermissionRequest()
 		describeImageShareRequest.RegionId = "cn-beijing"
@@ -494,7 +491,7 @@ func TestBuilderAcc_forceDeleteSnapshot(t *testing.T) {
 	})
 
 	// Get image data by image image name
-	client, _ := testAliyunClient()
+	client, _ := testApsaraStackClient()
 
 	describeImagesRequest := ecs.CreateDescribeImagesRequest()
 	describeImagesRequest.RegionId = "cn-beijing"
@@ -533,7 +530,7 @@ const testBuilderAccForceDeleteSnapshot = `
 			"instance_type": "ecs.n1.tiny",
 			"source_image":"ubuntu_18_04_64_20G_alibase_20190509.vhd",
 			"io_optimized":"true",
-			"ssh_username":"root",
+
 			"image_force_delete_snapshots": "%s",
 			"image_force_delete": "%s",
 			"image_name": "packer-test-%s"
@@ -544,7 +541,7 @@ const testBuilderAccForceDeleteSnapshot = `
 func checkSnapshotsDeleted(snapshotIds []string) builderT.TestCheckFunc {
 	return func(artifacts []packer.Artifact) error {
 		// Verify the snapshots are gone
-		client, _ := testAliyunClient()
+		client, _ := testApsaraStackClient()
 		data, err := json.Marshal(snapshotIds)
 		if err != nil {
 			return fmt.Errorf("Marshal snapshotIds array failed %v", err)
@@ -584,7 +581,6 @@ const testBuilderAccImageTags = `
 			"region": "cn-beijing",
 			"instance_type": "ecs.n1.tiny",
 			"source_image":"ubuntu_18_04_64_20G_alibase_20190509.vhd",
-			"ssh_username": "root",
 			"io_optimized":"true",
 			"image_name": "packer-test-imageTags_{{timestamp}}",
 			"tags": {
@@ -608,7 +604,7 @@ func checkImageTags() builderT.TestCheckFunc {
 		imageId := artifact.ApsaraStackImages[defaultTestRegion]
 
 		// describe the image, get block devices with a snapshot
-		client, _ := testAliyunClient()
+		client, _ := testApsaraStackClient()
 
 		describeImageTagsRequest := ecs.CreateDescribeTagsRequest()
 		describeImageTagsRequest.RegionId = defaultTestRegion
@@ -699,7 +695,7 @@ const testBuilderAccDataDiskEncrypted = `
 			"instance_type": "ecs.n1.tiny",
 			"source_image":"ubuntu_18_04_64_20G_alibase_20190509.vhd",
 			"io_optimized":"true",
-			"ssh_username":"root",
+		
 			"image_name": "packer-test-dataDiskEncrypted_{{timestamp}}",
 			"image_disk_mappings": [
 				{
@@ -738,7 +734,7 @@ func checkDataDiskEncrypted() builderT.TestCheckFunc {
 		imageId := artifact.ApsaraStackImages[defaultTestRegion]
 
 		// describe the image, get block devices with a snapshot
-		client, _ := testAliyunClient()
+		client, _ := testApsaraStackClient()
 
 		describeImagesRequest := ecs.CreateDescribeImagesRequest()
 		describeImagesRequest.RegionId = defaultTestRegion
@@ -816,7 +812,6 @@ const testBuilderAccSystemDiskEncrypted = `
 			"instance_type": "ecs.n1.tiny",
 			"source_image":"ubuntu_18_04_64_20G_alibase_20190509.vhd",
 			"io_optimized":"true",
-			"ssh_username":"root",
 			"image_name": "packer-test_{{timestamp}}",
 			"image_encrypted": "true"
 		}]
@@ -836,7 +831,7 @@ func checkSystemDiskEncrypted() builderT.TestCheckFunc {
 		}
 
 		// describe the image, get block devices with a snapshot
-		client, _ := testAliyunClient()
+		client, _ := testApsaraStackClient()
 		imageId := artifact.ApsaraStackImages[defaultTestRegion]
 
 		describeImagesRequest := ecs.CreateDescribeImagesRequest()
@@ -884,7 +879,7 @@ func testAccPreCheck(t *testing.T) {
 	}
 }
 
-func testAliyunClient() (*ClientWrapper, error) {
+func testApsaraStackClient() (*ClientWrapper, error) {
 	access := &ApsaraStackAccessConfig{ApsaraStackRegion: "cn-beijing"}
 	err := access.Config()
 	if err != nil {
