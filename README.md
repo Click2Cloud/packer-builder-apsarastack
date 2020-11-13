@@ -66,7 +66,6 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
       "image_name": "packer_basicudvx",
       "instance_type": "ecs.se1.large",
       "source_image": "centos_7_03_64_20G_alibase_20170818.vhd",
-      "internet_charge_type": "PayByTraffic",
       "io_optimized": "true",
       "communicator": "none",
       "user_data" :"yum install redis.x86_64 -y"
@@ -124,7 +123,6 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "source_image":"centos_6_08_32_40G_alibase_20170710.raw",
     "communicator": "none",
     "instance_type":"ecs.e4.small",
-    "internet_charge_type":"PayByTraffic",
     "io_optimized":"true",
     "image_disk_mappings":[{"disk_name":"data1","disk_size":20},{"disk_name":"data1","disk_size":20,"disk_device":"/dev/xvdz"}]
   }]
