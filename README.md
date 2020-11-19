@@ -128,7 +128,7 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
   }]
 }
 ```
-#Create a custom image using existing custom image (substitue the value of source image with custom image id)
+### Create a custom image using existing custom image (substitue the value of source image with custom image id)
 ```
 {
   "variables": {
@@ -153,7 +153,7 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
      }]
 }
 ```
-#Create a simple custom image with vpc configure
+### Create a simple custom image with vpc configure
 
 ```
 {
@@ -181,7 +181,7 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
   }]
 }
 ```
-#Create custom image with existing vpc, vswitch and security group
+### Create custom image with existing vpc, vswitch and security group
 ```
 {
   "variables": {
