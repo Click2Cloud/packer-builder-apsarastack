@@ -72,7 +72,7 @@ func (s *stepPreValidate) validateDestImageName(state multistep.StateBag) error 
 
 	describeImagesRequest := ecs.CreateDescribeImagesRequest()
 	describeImagesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
-	describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": "11", "ResourceGroup": "27"}
+	describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs","Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
 	describeImagesRequest.RegionId = config.ApsaraStackRegion
 	describeImagesRequest.ImageName = s.ApsaraStackDestImageName
