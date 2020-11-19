@@ -70,7 +70,7 @@ func (s *stepCreateApsaraStackInstance) Run(ctx context.Context, state multistep
 
 	describeInstancesRequest := ecs.CreateDescribeInstancesRequest()
 	describeInstancesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
-	describeInstancesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs"}
+	describeInstancesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs","Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
 	describeInstancesRequest.InstanceIds = fmt.Sprintf("[\"%s\"]", instanceId)
 	instances, err := client.DescribeInstances(describeInstancesRequest)
