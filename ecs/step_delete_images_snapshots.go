@@ -60,7 +60,7 @@ func (s *stepDeleteApsaraStackImageSnapshots) deleteImageAndSnapshots(state mult
 
 	describeImagesRequest := ecs.CreateDescribeImagesRequest()
 	describeImagesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
-	describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs"}
+	describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs","Department": config.Department, "ResourceGroup": config.ResourceGroup}
 	//describeImagesRequest.ImageOwnerAlias="self"
 	describeImagesRequest.RegionId = region
 	describeImagesRequest.ImageName = imageName
