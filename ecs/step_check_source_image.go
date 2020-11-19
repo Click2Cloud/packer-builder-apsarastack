@@ -19,7 +19,7 @@ func (s *stepCheckApsaraStackSourceImage) Run(ctx context.Context, state multist
 
 	describeImagesRequest := ecs.CreateDescribeImagesRequest()
 	describeImagesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
-	describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs"}
+	describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs","Department": config.Department, "ResourceGroup": config.ResourceGroup}
 	//describeImagesRequest.Headers = map[string]string{"RegionId": }
 	//describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": client.SecretKey, "Product": "ecs"}
 
