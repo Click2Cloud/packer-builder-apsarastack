@@ -53,7 +53,7 @@ func (s *stepRunApsaraStackInstance) Cleanup(state multistep.StateBag) {
 
 	describeInstancesRequest := ecs.CreateDescribeInstancesRequest()
 	describeInstancesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
-	describeInstancesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs"}
+	describeInstancesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs","Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
 	describeInstancesRequest.InstanceIds = fmt.Sprintf("[\"%s\"]", instance.InstanceId)
 	instancesResponse, _ := client.DescribeInstances(describeInstancesRequest)
