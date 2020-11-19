@@ -210,7 +210,7 @@ func (c *ClientWrapper) WaitForInstanceStatus(regionId string, instanceId string
 			config := state.Get("config").(*Config)
 			request := ecs.CreateDescribeInstancesRequest()
 			request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
-			request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs"}
+			request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs","Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
 			request.RegionId = regionId
 			request.InstanceIds = fmt.Sprintf("[\"%s\"]", instanceId)
@@ -240,7 +240,7 @@ func (c *ClientWrapper) WaitForImageStatus(regionId string, imageId string, expe
 			config := state.Get("config").(*Config)
 			request := ecs.CreateDescribeImagesRequest()
 			request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
-			request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs"}
+			request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs","Department": config.Department, "ResourceGroup": config.ResourceGroup}
 			request.ImageOwnerAlias = "self"
 			request.RegionId = regionId
 			request.ImageId = imageId
