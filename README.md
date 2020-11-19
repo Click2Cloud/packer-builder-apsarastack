@@ -96,6 +96,7 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "source_image":"win2012r2_9600_x64_dtc_en-us_40G_alibase_20200314.vhd",
     "instance_type":"ecs.xn4.small",
     "io_optimized":"true",
+    "internet_charge_type":"PayByTraffic",
     "communicator": "none",
     "user_data_file": "examples/apsarastack/basic/winrm_enable_userdata.ps1"
   }]
@@ -127,7 +128,91 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
   }]
 }
 ```
+#Create a custom image using existing custom image (substitue the value of source image with custom image id)
+```
+{
+  "variables": {
+    "access_key": "{{env `APSARASTACK_ACCESS_KEY`}}",
+    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}"
+  },
+  "builders": [{
+    "type":"apsarastack-ecs",
+    "access_key":"{{user `access_key`}}",
+    "secret_key":"{{user `secret_key`}}",
+    "region": "cn-wulan-env82-d01",
+    "insecure": true,
+    "proxy": "http://100.67.27.224:58201",
+    "endpoint": "server.asapi.cn-wulan-env82-d01.intra.env17e.shuguang.com/asapi/v3",
+    "department": "11",
+    "resource_group": "27",
+    "image_name":"packer_with_custom_image",
+    "source_image":"m-0rv0282g8kfo8feoi1tu",
+    "communicator": "none",
+    "instance_type":"ecs.e4.small",
+    "io_optimized":"true"
+     }]
+}
+```
+#Create a simple custom image with vpc configure
 
+```
+{
+  "variables": {
+    "access_key": "{{env `APSARASTACK_ACCESS_KEY`}}",
+    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}"
+  },
+  "builders": [{
+    "type": "apsarastack",
+    "access_key": "{{user `access_key`}}",
+    "secret_key": "{{user `secret_key`}}",
+    "region": "cn-neimeng-env30-d01",
+    "insecure": true,
+    "proxy": "http://100.67.76.9:53001",
+    "endpoint": "server.asapi.cn-neimeng-env30-d01.intra.env30.shuguang.com/asapi/v3",
+    "department": "54437",
+    "resource_group": "571",
+    "image_name":"packer-custom",
+    "source_image":"centos_7_7_x64_20G_alibase_20200220.vhd",
+    "instance_type":"ecs.e4.small",
+    "io_optimized":"true",
+    "vpc_name": "Vpc_packer",
+    "vpc_cidr_block": "172.16.0.0/16",
+    "communicator": "none"
+  }]
+}
+```
+#Create custom image with existing vpc, vswitch and security group
+```
+{
+  "variables": {
+    "access_key": "{{env `APSARASTACK_ACCESS_KEY`}}",
+    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}"
+  },
+  "builders": [
+    {
+      "type": "apsarastack",
+      "access_key": "{{user `access_key`}}",
+      "secret_key": "{{user `secret_key`}}",
+      "region": "cn-wulan-env82-d01",
+      "insecure": true,
+      "proxy": "http://100.67.27.224:58201",
+      "endpoint": "server.asapi.cn-wulan-env82-d01.intra.env17e.shuguang.com/asapi/v3",
+      "department": "11",
+      "resource_group": "27",
+      "image_name": "packer_basicfortestingghc",
+      "source_image": "centos_7_7_x64_20G_alibase_20200220.vhd",
+      "instance_type": "ecs.se1.large",
+      "instance_name": "testing123",
+      "io_optimized": "true",
+      "description": "fortetsting",
+      "vpc_id": "vpc-2gi8gb07p26sy2ihqr62b",
+      "vswitch_id": "vsw-2gil89e3z69pr7pnrhsar",
+      "communicator": "none",
+      "security_group_id": "sg-2gi013gr5snengy651wv"
+    }
+  ]
+}
+```
 ### Here are [more examples](https://github.com/aliyun/packer-builder-apsarastack/tree/master/examples/apsarastack) include chef, jenkins image template etc.
 
 ## 
