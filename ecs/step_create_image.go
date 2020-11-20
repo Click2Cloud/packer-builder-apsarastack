@@ -51,7 +51,7 @@ func (s *stepCreateApsaraStackImage) Run(ctx context.Context, state multistep.St
 
 	imageId := createImageResponse.(*ecs.CreateImageResponse).ImageId
 
-	imagesResponse, err := client.WaitForImageStatus(config.ApsaraStackRegion, imageId, ImageStatusAvailable, time.Duration(s.WaitSnapshotReadyTimeout)*time.Second, state)
+	imagesResponse, err := client.WaitForImageStatus(config.ApsaraStackRegion, imageId, ImageStatusAvailable, time.Duration(s.WaitSnapshotReadyTimeout)*time.Minute, state)
 
 	// save image first for cleaning up if timeout
 	images := imagesResponse.(*ecs.DescribeImagesResponse).Images.Image
