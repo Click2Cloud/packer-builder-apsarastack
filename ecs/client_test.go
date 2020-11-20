@@ -44,7 +44,7 @@ func TestWaitForExpectedExceedRetryTimes(t *testing.T) {
 func TestWaitForExpectedExceedRetryTimeout(t *testing.T) {
 	c := ClientWrapper{}
 
-	expectTimeout := 10 * time.Second
+	expectTimeout := 10 * time.Minute
 	iter := 0
 	waitDone := make(chan bool, 1)
 
