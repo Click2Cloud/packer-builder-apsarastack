@@ -60,7 +60,7 @@ type ApsaraStackAccessConfig struct {
 }
 
 const Packer = "HashiCorp-Packer"
-const DefaultRequestReadTimeout = 10 * time.Second
+const DefaultRequestReadTimeout = 10 * time.Minute
 
 // Client for ApsaraStackClient
 func (c *ApsaraStackAccessConfig) Client() (*ClientWrapper, error) {
@@ -281,7 +281,7 @@ func getConfigFromProfile(c *ApsaraStackAccessConfig, ProfileKey string) (interf
 func (c *ApsaraStackAccessConfig) getSdkConfig() *sdk.Config {
 	return sdk.NewConfig().
 		WithMaxRetryTime(5).
-		WithTimeout(time.Duration(30) * time.Second).
+		WithTimeout(time.Duration(30) * time.Minute).
 		WithEnableAsync(true).
 		WithGoRoutinePoolSize(100).
 		WithMaxTaskQueueSize(10000).
