@@ -70,7 +70,7 @@ func (s *stepRegionCopyApsaraStackImage) Run(ctx context.Context, state multiste
 	}
 
 	if config.ImageEncrypted != confighelper.TriUnset {
-		if _, err := client.WaitForImageStatus(s.RegionId, ApsaraStackImages[s.RegionId], ImageStatusAvailable, time.Duration(APSARASTACK_DEFAULT_LONG_TIMEOUT)*time.Second, state); err != nil {
+		if _, err := client.WaitForImageStatus(s.RegionId, ApsaraStackImages[s.RegionId], ImageStatusAvailable, time.Duration(APSARASTACK_DEFAULT_LONG_TIMEOUT)*time.Minute, state); err != nil {
 			return halt(state, err, fmt.Sprintf("Timeout waiting image %s finish copying", ApsaraStackImages[s.RegionId]))
 		}
 	}
