@@ -42,8 +42,7 @@ func (c *RunConfig) Prepare(ctx *interpolate.Context) []error {
 
 		c.Comm.SSHTimeout = 10 * time.Minute
 		c.Comm.SSHTemporaryKeyPairName = fmt.Sprintf("packer_%s", uuid.TimeOrderedUUID())
-		c.Comm.SSHProxyHost = "http://100.67.154.166"
-		c.Comm.SSHProxyPort = 56601
+		
 	}
 
 	// Validation
