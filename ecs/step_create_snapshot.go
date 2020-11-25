@@ -52,7 +52,8 @@ func (s *stepCreateApsaraStackSnapshot) Run(ctx context.Context, state multistep
 	// Create the ApsaraStack snapshot
 	ui.Say(fmt.Sprintf("Creating snapshot from system disk %s: %s", disks[0].DiskId, snapshot.SnapshotId))
 
-	snapshotsResponse, err := client.WaitForSnapshotStatus(config.ApsaraStackRegion, snapshot.SnapshotId, SnapshotStatusAccomplished, time.Duration(s.WaitSnapshotReadyTimeout)*time.Minute, state)
+	snapshotsResponse, err := client.WaitForSnapshotStatus(config.ApsaraStackRegion, snapshot.SnapshotId, SnapshotStatusAccomplished, time.Duration(s.WaitSnapshotReadyTimeout)*time.Second, state)
+
 	if err != nil {
 		_, ok := err.(errors.Error)
 		if ok {

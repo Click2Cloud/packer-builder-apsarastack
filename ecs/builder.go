@@ -141,7 +141,7 @@ func (b *Builder) Run(ctx context.Context, ui packer.Ui, hook packer.Hook) (pack
 		})
 	}
 	steps = append(steps,
-		&stepRunApsaraStackInstance{},
+		//&stepRunApsaraStackInstance{},
 		&stepDeleteApsaraStackImageSnapshots{
 			ApsaraStackImageForceDeleteSnapshots: b.config.ApsaraStackImageForceDeleteSnapshots,
 			ApsaraStackImageForceDelete:          b.config.ApsaraStackImageForceDelete,
