@@ -9,7 +9,6 @@ import (
 	"github.com/hashicorp/packer/template/interpolate"
 	"os"
 	"strings"
-	"time"
 )
 
 type RunConfig struct {
@@ -38,13 +37,17 @@ type RunConfig struct {
 }
 
 func (c *RunConfig) Prepare(ctx *interpolate.Context) []error {
-	if c.Comm.SSHPrivateKeyFile == "" && c.Comm.SSHPassword == "" && c.Comm.WinRMPassword == "" {
+	/*if c.Comm.SSHPrivateKeyFile == "" && c.Comm.SSHPassword == "" && c.Comm.WinRMPassword == "" {
 
 		c.Comm.SSHTimeout = 10 * time.Minute
 		c.Comm.SSHTemporaryKeyPairName = fmt.Sprintf("packer_%s", uuid.TimeOrderedUUID())
 		
-	}
+	}*/
+	if c.Comm.SSHKeyPairName == "" && c.Comm.SSHTemporaryKeyPairName == "" &&
+		c.Comm.SSHPrivateKeyFile == "" && c.Comm.SSHPassword == "" && c.Comm.WinRMPassword == "" {
 
+		c.Comm.SSHTemporaryKeyPairName = fmt.Sprintf("packer_%s", uuid.TimeOrderedUUID())
+	}
 	// Validation
 	errs := c.Comm.Prepare(ctx)
 	if c.ApsaraStackSourceImage == "" {
