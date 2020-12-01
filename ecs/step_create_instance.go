@@ -81,6 +81,8 @@ func (s *stepCreateApsaraStackInstance) Run(ctx context.Context, state multistep
 	ui.Message(fmt.Sprintf("Created instance: %s", instanceId))
 	s.instance = &instances.Instances.Instance[0]
 	state.Put("instance", s.instance)
+	//state.Put("ipaddress",s.instance.VpcAttributes.PrivateIpAddress)
+	state.Put("ipaddress", s.instance.VpcAttributes.PrivateIpAddress.IpAddress[0])
 	// instance_id is the generic term used so that users can have access to the
 	// instance id inside of the provisioners, used in step_provision.
 	state.Put("instance_id", instanceId)

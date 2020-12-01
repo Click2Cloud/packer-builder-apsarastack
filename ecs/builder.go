@@ -1,11 +1,11 @@
 package ecs
 
 import (
-	"fmt"
 	"context"
+	"fmt"
 	"github.com/hashicorp/hcl/v2/hcldec"
-	"github.com/hashicorp/packer/helper/communicator"
 	"github.com/hashicorp/packer/common"
+	"github.com/hashicorp/packer/helper/communicator"
 	"github.com/hashicorp/packer/helper/config"
 	"github.com/hashicorp/packer/helper/multistep"
 	"github.com/hashicorp/packer/packer"
@@ -134,7 +134,7 @@ func (b *Builder) Run(ctx context.Context, ui packer.Ui, hook packer.Hook) (pack
 			InstanceName:            b.config.InstanceName,
 			ZoneId:                  b.config.ZoneId,
 		})
-	if b.chooseNetworkType() == InstanceNetworkVpc {
+	/*if b.chooseNetworkType() == InstanceNetworkVpc {
 		steps = append(steps, &stepConfigApsaraStackEIP{
 			AssociatePublicIpAddress: b.config.AssociatePublicIpAddress,
 			RegionId:                 b.config.ApsaraStackRegion,
@@ -146,14 +146,13 @@ func (b *Builder) Run(ctx context.Context, ui packer.Ui, hook packer.Hook) (pack
 			RegionId:     b.config.ApsaraStackRegion,
 			SSHPrivateIp: b.config.SSHPrivateIp,
 		})
-	}
+	}*/
 	steps = append(steps,
 		&stepAttachKeyPair{},
 		//&stepRunApsaraStackInstance{},
 		&communicator.StepConnect{
 			Config: &b.config.RunConfig.Comm,
-			Host:
-				SSHHost(
+			Host: SSHHost(
 				client,
 				b.config.SSHPrivateIp),
 			SSHConfig: b.config.RunConfig.Comm.SSHConfigFunc(),

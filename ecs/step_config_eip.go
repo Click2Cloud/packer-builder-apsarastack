@@ -58,6 +58,8 @@ func (s *stepConfigApsaraStackEIP) Run(ctx context.Context, state multistep.Stat
 
 	ipaddress := allocateEipAddressResponse.(*ecs.AllocateEipAddressResponse).EipAddress
 	ui.Message(fmt.Sprintf("Allocated eip: %s", ipaddress))
+	/*	ipaddress := allocateEipAddressResponse.(*ecs.AllocateEipAddressResponse).EipAddress
+		ui.Message(fmt.Sprintf("Allocated eip: %s", ipaddress))*/
 
 	allocateId := allocateEipAddressResponse.(*ecs.AllocateEipAddressResponse).AllocationId
 	s.allocatedId = allocateId
