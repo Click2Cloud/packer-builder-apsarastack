@@ -1,0 +1,33 @@
+{
+  "variables": {
+    "access_key": "{{env `APSARASTACK_ACCESS_KEY`}}",
+    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}"
+  },
+  "builders": [{
+    "type": "apsarastack",
+    "access_key": "{{user `access_key`}}",
+    "secret_key": "{{user `secret_key`}}",
+    "region": "cn-neimeng-env30-d01",
+    "insecure": true,
+    "proxy":  "http://100.67.76.9:53001",
+    "endpoint": "server.asapi.cn-neimeng-env30-d01.intra.env30.shuguang.com/asapi/v3",
+    "department": "54437",
+    "resource_group": "571",
+    "image_name":"packer-echo-userdata",
+    "source_image":"ubuntu_16_04_x64_20G_alibase_20200220.vhd",
+    "instance_type":"ecs.e4.small",
+    "io_optimized":"true",
+    "communicator": "ssh",
+    "ssh_username": "root",
+    "user_data_file": "examples/apsarastack/basic/user_data.sh"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "inline": [
+      "sleep 15",
+      "#!/bin/sh",
+      "echo \"Hello world\""
+    ]
+  }]
+
+}
