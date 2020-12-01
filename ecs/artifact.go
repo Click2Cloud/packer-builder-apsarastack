@@ -71,7 +71,7 @@ func (a *Artifact) Destroy() error {
 	for regionId, imageId := range a.ApsaraStackImages {
 		describeImagesRequest := ecs.CreateDescribeImagesRequest()
 		describeImagesRequest.Headers = map[string]string{"RegionId": a.Config.ApsaraStackRegion}
-		describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": a.Config.ApsaraStackSecretKey, "Product": "ecs"}
+		describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": a.Config.ApsaraStackSecretKey, "Product": "ecs", "Department": a.Config.Department, "ResourceGroup": a.Config.ResourceGroup}
 
 		describeImagesRequest.RegionId = regionId
 		describeImagesRequest.ImageId = imageId

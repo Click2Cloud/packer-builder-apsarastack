@@ -52,7 +52,7 @@ func (s *stepCreateApsaraStackInstance) Run(ctx context.Context, state multistep
 
 	createInstanceResponse, err := client.WaitForExpected(&WaitForExpectArgs{
 		RequestFunc: func() (responses.AcsResponse, error) {
-			return client.CreateInstance(createInstanceRequest)
+			return client.RunInstances(createInstanceRequest)
 		},
 		EvalFunc: client.EvalCouldRetryResponse(createInstanceRetryErrors, EvalRetryErrorType),
 	})
@@ -61,16 +61,16 @@ func (s *stepCreateApsaraStackInstance) Run(ctx context.Context, state multistep
 		return halt(state, err, "Error creating instance")
 	}
 
-	instanceId := createInstanceResponse.(*ecs.CreateInstanceResponse).InstanceId
+	instanceId := createInstanceResponse.(*ecs.RunInstancesResponse).InstanceIdSets.InstanceIdSet[0]
 
-	_, err = client.WaitForInstanceStatus(s.RegionId, instanceId, InstanceStatusStopped, state)
+	_, err = client.WaitForInstanceStatus(s.RegionId, instanceId, InstanceStatusRunning, state)
 	if err != nil {
 		return halt(state, err, "Error waiting create instance")
 	}
-
+	ui.Say("[EXTRA] Creation Complete, describing instance...")
 	describeInstancesRequest := ecs.CreateDescribeInstancesRequest()
 	describeInstancesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
-	describeInstancesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs","Department": config.Department, "ResourceGroup": config.ResourceGroup}
+	describeInstancesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
 	describeInstancesRequest.InstanceIds = fmt.Sprintf("[\"%s\"]", instanceId)
 	instances, err := client.DescribeInstances(describeInstancesRequest)
@@ -117,8 +117,8 @@ func (s *stepCreateApsaraStackInstance) Cleanup(state multistep.StateBag) {
 	}
 }
 
-func (s *stepCreateApsaraStackInstance) buildCreateInstanceRequest(state multistep.StateBag) (*ecs.CreateInstanceRequest, error) {
-	request := ecs.CreateCreateInstanceRequest()
+func (s *stepCreateApsaraStackInstance) buildCreateInstanceRequest(state multistep.StateBag) (*ecs.RunInstancesRequest, error) {
+	request := ecs.CreateRunInstancesRequest()
 	config := state.Get("config").(*Config)
 	request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
@@ -173,13 +173,13 @@ func (s *stepCreateApsaraStackInstance) buildCreateInstanceRequest(state multist
 	systemDisk := config.ApsaraStackImageConfig.ECSSystemDiskMapping
 	request.SystemDiskDiskName = systemDisk.DiskName
 	request.SystemDiskCategory = systemDisk.DiskCategory
-	request.SystemDiskSize = requests.Integer(convertNumber(systemDisk.DiskSize))
+	request.SystemDiskSize = (convertNumber(systemDisk.DiskSize))
 	request.SystemDiskDescription = systemDisk.Description
 
 	imageDisks := config.ApsaraStackImageConfig.ECSImagesDiskMappings
-	var dataDisks []ecs.CreateInstanceDataDisk
+	var dataDisks []ecs.RunInstancesDataDisk
 	for _, imageDisk := range imageDisks {
-		var dataDisk ecs.CreateInstanceDataDisk
+		var dataDisk ecs.RunInstancesDataDisk
 		dataDisk.DiskName = imageDisk.DiskName
 		dataDisk.Category = imageDisk.DiskCategory
 		dataDisk.Size = string(convertNumber(imageDisk.DiskSize))
