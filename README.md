@@ -61,9 +61,9 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
       "insecure": true,
       "proxy": "http://100.67.27.224:58201",
       "endpoint": "server.asapi.cn-wulan-env82-d01.intra.env17e.shuguang.com/asapi/v3",
-      "department": "11",
-      "resource_group": "27",
-      "image_name": "packer_basicudvx",
+      "department": "54437",
+      "resource_group": "571",
+      "image_name": "packer_basic",
       "instance_type": "ecs.se1.large",
       "source_image": "centos_7_03_64_20G_alibase_20170818.vhd",
       "io_optimized": "true",
@@ -90,8 +90,8 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "insecure": true,
     "proxy": "http://100.67.27.224:58201",
     "endpoint": "server.asapi.cn-wulan-env82-d01.intra.env17e.shuguang.com/asapi/v3",
-    "department": "11",
-    "resource_group": "27",
+    "department": "54437",
+    "resource_group": "571",
     "image_name":"packer_test",
     "source_image":"win2012r2_9600_x64_dtc_en-us_40G_alibase_20200314.vhd",
     "instance_type":"ecs.xn4.small",
@@ -117,8 +117,8 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "insecure": true,
     "proxy": "http://100.67.27.224:58201",
     "endpoint": "server.asapi.cn-wulan-env82-d01.intra.env17e.shuguang.com/asapi/v3",
-    "department": "11",
-    "resource_group": "27",
+    "department": "54437",
+    "resource_group": "571",
     "image_name":"packer_with_data_disk",
     "source_image":"centos_6_08_32_40G_alibase_20170710.raw",
     "communicator": "none",
@@ -143,8 +143,8 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "insecure": true,
     "proxy": "http://100.67.27.224:58201",
     "endpoint": "server.asapi.cn-wulan-env82-d01.intra.env17e.shuguang.com/asapi/v3",
-    "department": "11",
-    "resource_group": "27",
+    "department": "54437",
+    "resource_group": "571",
     "image_name":"packer_with_custom_image",
     "source_image":"m-0rv0282g8kfo8feoi1tu",
     "communicator": "none",
@@ -197,8 +197,8 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
       "insecure": true,
       "proxy": "http://100.67.27.224:58201",
       "endpoint": "server.asapi.cn-wulan-env82-d01.intra.env17e.shuguang.com/asapi/v3",
-      "department": "11",
-      "resource_group": "27",
+      "department": "54437",
+      "resource_group": "571",
       "image_name": "packer_basicfortestingghc",
       "source_image": "centos_7_7_x64_20G_alibase_20200220.vhd",
       "instance_type": "ecs.se1.large",
@@ -213,6 +213,121 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
   ]
 }
 ```
+### Create custom image with provisioner and ssh key pair (examples/apsarastack/basic/apsarastack_with_sshkeypair.json)
+```
+{
+  "variables": {
+    "access_key": "{{env `APSARASTACK_ACCESS_KEY`}}",
+    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}"
+  },
+  "builders": [{
+    "type": "apsarastack",
+    "access_key": "{{user `access_key`}}",
+    "secret_key": "{{user `secret_key`}}",
+    "region": "cn-neimeng-env30-d01",
+    "insecure": true,
+    "proxy":  "http://100.67.76.9:53001",
+    "endpoint": "server.asapi.cn-neimeng-env30-d01.intra.env30.shuguang.com/asapi/v3",
+    "department": "54437",
+    "resource_group": "571",
+    "image_name":"packer-echo-userdata",
+    "source_image":"ubuntu_16_04_x64_20G_alibase_20200220.vhd",
+    "instance_type":"ecs.e4.small",
+    "vpc_id": "vpc-2gi8gb07p26sy2ihqr62b",
+    "vswitch_id": "vsw-2gil89e3z69pr7pnrhsar",
+    "io_optimized":"true",
+    "communicator": "ssh",
+    "ssh_username": "root",
+    "user_data_file": "examples/apsarastack/basic/user_data.sh"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "inline": [
+      "sleep 15",
+      "#!/bin/sh",
+      "echo \"Hello world\""
+    ]
+  }]
+}
+
+```
+### Create custom image with provisioner and ssh password (examples/apsarastack/basic/apsarastack_with_sshpassword.json)
+```
+{
+  "variables": {
+    "access_key": "{{env `APSARASTACK_ACCESS_KEY`}}",
+    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}"
+  },
+  "builders": [{
+    "type": "apsarastack",
+    "access_key": "{{user `access_key`}}",
+    "secret_key": "{{user `secret_key`}}",
+    "region": "cn-neimeng-env30-d01",
+    "insecure": true,
+    "proxy":  "http://100.67.76.9:53001",
+    "endpoint": "server.asapi.cn-neimeng-env30-d01.intra.env30.shuguang.com/asapi/v3",
+    "department": "54437",
+    "resource_group": "571",
+    "image_name":"packer-provisioner",
+    "source_image":"ubuntu_16_04_x64_20G_alibase_20200220.vhd",
+    "instance_type":"ecs.e4.small",
+    "io_optimized":"true",
+    "vpc_id": "vpc-2gi8gb07p26sy2ihqr62b",
+    "vswitch_id": "vsw-2gil89e3z69pr7pnrhsar",
+    "communicator": "ssh",
+    "ssh_username": "root",
+    "ssh_password": "Test!12345",
+    "user_data_file": "examples/apsarastack/basic/user_data.sh"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "inline": [
+      "sleep 15",
+      "#!/bin/sh",
+      "echo \"Hello world\""
+    ]
+  }]
+
+}
+
+```
+### Create custom image with ansible script (examples/apsarastack/ansible/apsarastack.json)
+```
+{
+  "variables": {
+    "access_key": "{{env `APSARASTACK_ACCESS_KEY`}}",
+    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}"
+  },
+  "builders": [{
+    "type": "apsarastack",
+    "access_key": "{{user `access_key`}}",
+    "secret_key": "{{user `secret_key`}}",
+    "region": "cn-neimeng-env30-d01",
+    "insecure": true,
+    "proxy": "http://100.67.76.9:53001",
+    "endpoint": "server.asapi.cn-neimeng-env30-d01.intra.env30.shuguang.com/asapi/v3",
+    "department": "54437",
+    "resource_group": "571",
+    "image_name":"packer-yml-userdata",
+    "source_image":"ubuntu_16_04_x64_20G_alibase_20200220.vhd",
+    "instance_type":"ecs.e4.small",
+    "io_optimized":"true",
+    "vpc_id": "vpc-2gi8gb07p26sy2ihqr62b",
+    "vswitch_id": "vsw-2gil89e3z69pr7pnrhsar",
+    "communicator": "ssh",
+    "ssh_username": "root",
+    "ssh_password": "Test!12345",
+    "user_data_file": "examples/apsarastack/ansible/user_data.sh"
+  }],
+  "provisioners": [
+    {
+      "type":            "ansible-local",
+      "playbook_file":   "examples/apsarastack/ansible/playbook.yml",
+      "extra_arguments": ["--extra-vars", "\"pizza_toppings={{ user `topping`}}\""]
+    }
+  ]
+}
+```
 ### Here are [more examples](https://github.com/aliyun/packer-builder-apsarastack/tree/master/examples/apsarastack) include chef, jenkins image template etc.
 
 ## 
@@ -223,5 +338,5 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
 ### Contributors
 
 ### Refrence
-* Pakcer document: https://www.packer.io/intro/
+* Packer document: https://www.packer.io/intro/
 
