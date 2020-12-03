@@ -16,6 +16,8 @@
     "image_name":"packer-echo-userdata",
     "source_image":"ubuntu_16_04_x64_20G_alibase_20200220.vhd",
     "instance_type":"ecs.e4.small",
+    "vpc_id": "vpc-2gi8gb07p26sy2ihqr62b",
+    "vswitch_id": "vsw-2gil89e3z69pr7pnrhsar",
     "io_optimized":"true",
     "communicator": "ssh",
     "ssh_username": "root",
