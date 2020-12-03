@@ -17,6 +17,8 @@
     "source_image":"ubuntu_16_04_x64_20G_alibase_20200220.vhd",
     "instance_type":"ecs.e4.small",
     "io_optimized":"true",
+    "vpc_id": "vpc-2gi8gb07p26sy2ihqr62b",
+    "vswitch_id": "vsw-2gil89e3z69pr7pnrhsar",
     "communicator": "ssh",
     "ssh_username": "root",
     "ssh_password": "Test!12345",
