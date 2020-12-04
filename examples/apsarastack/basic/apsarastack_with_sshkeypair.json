@@ -1,7 +1,8 @@
 {
   "variables": {
     "access_key": "{{env `APSARASTACK_ACCESS_KEY`}}",
-    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}"
+    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}",
+    "resource_group_set_name": "{{env `RESOURCE_GROUP_SET_NAME`}}"
   },
   "builders": [{
     "type": "apsarastack",
@@ -11,11 +12,11 @@
     "insecure": true,
     "proxy":  "http://100.67.76.9:53001",
     "endpoint": "server.asapi.cn-neimeng-env30-d01.intra.env30.shuguang.com/asapi/v3",
-    "department": "54437",
-    "resource_group": "571",
     "image_name":"packer-echo-userdata",
     "source_image":"ubuntu_16_04_x64_20G_alibase_20200220.vhd",
     "instance_type":"ecs.e4.small",
+    "vpc_id": "vpc-2gi8gb07p26sy2ihqr62b",
+    "vswitch_id": "vsw-2gil89e3z69pr7pnrhsar",
     "io_optimized":"true",
     "communicator": "ssh",
     "ssh_username": "root",

@@ -1,7 +1,8 @@
 {
   "variables": {
     "access_key": "{{env `APSARASTACK_ACCESS_KEY`}}",
-    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}"
+    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}",
+    "resource_group_set_name": "{{env `RESOURCE_GROUP_SET_NAME`}}"
   },
   "builders": [{
     "type": "apsarastack",
@@ -11,8 +12,6 @@
     "insecure": true,
     "proxy": "http://100.67.76.9:53001",
     "endpoint": "server.asapi.cn-neimeng-env30-d01.intra.env30.shuguang.com/asapi/v3",
-    "department": "54437",
-    "resource_group": "571",
     "image_name":"packer_test",
     "source_image":"win2019_1809_x64_dtc_zh-cn_40G_alibase_20200314.vhd",
     "instance_type":"ecs.e4.small",

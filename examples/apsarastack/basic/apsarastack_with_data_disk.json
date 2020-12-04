@@ -1,18 +1,17 @@
 {
   "variables": {
     "access_key": "{{env `APSARASTACK_ACCESS_KEY`}}",
-    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}"
+    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}",
+    "resource_group_set_name": "{{env `RESOURCE_GROUP_SET_NAME`}}"
   },
   "builders": [{
-    "type":"apsarastack-ecs",
+    "type":"apsarastack",
     "access_key":"{{user `access_key`}}",
     "secret_key":"{{user `secret_key`}}",
     "region": "cn-wulan-env82-d01",
     "insecure": true,
     "proxy": "http://100.67.27.224:58201",
     "endpoint": "server.asapi.cn-wulan-env82-d01.intra.env17e.shuguang.com/asapi/v3",
-    "department": "11",
-    "resource_group": "27",
     "image_name":"packer_with_data_disk",
     "source_image":"centos_6_08_32_40G_alibase_20170710.raw",
     "communicator": "none",

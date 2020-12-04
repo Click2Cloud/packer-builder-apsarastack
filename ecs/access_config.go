@@ -5,6 +5,10 @@ import (
 	"fmt"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/endpoints"
+	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
+	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
+	"github.com/aliyun/packer-builder-apsarastack/ascm"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -33,6 +37,7 @@ type ApsaraStackAccessConfig struct {
 	// ApsaraStack region must be provided unless `profile` is set, but it can
 	// also be sourced from the `APSARASTACK_REGION` environment variable.
 	ApsaraStackRegion string `mapstructure:"region" required:"true"`
+	ResourceSetName   string `mapstructure:"resource_group_set_name" required:"true"`
 	// The region validation can be skipped if this value is true, the default
 	// value is false.
 	ApsaraStackSkipValidation bool `mapstructure:"skip_region_validation" required:"false"`
@@ -45,6 +50,7 @@ type ApsaraStackAccessConfig struct {
 	// ApsaraStack shared credentials file path. If this file exists, access and
 	// secret keys will be read from this file.
 	ApsaraStackSharedCredentialsFile string `mapstructure:"shared_credentials_file" required:"false"`
+
 	// STS access token, can be set through template or by exporting as
 	// environment variable such as `export SECURITY_TOKEN=value`.
 	SecurityToken string   `mapstructure:"security_token" required:"false"`
@@ -130,6 +136,28 @@ func (c *ApsaraStackAccessConfig) Client() (*ClientWrapper, error) {
 	if c.Proxy != "" {
 		client.SetHttpProxy(c.Proxy)
 	}
+	/*if c.ResourceSetName == "" {
+		return fmt.Errorf("errror while fetching resource group details, resource group set name can not be empty")
+	}
+	request := requests.NewCommonRequest()
+	request.RegionId = c.ApsaraStackRegion
+	request.Method = "GET"         // Set request method
+	request.Product = "ascm"       // Specify product
+	request.Domain = c.Endpoint      // Location Service will not be enabled if the host is specified. For example, service with a Certification type-Bearer Token should be specified
+	request.Version = "2019-05-10" // Specify product version
+	request.Scheme = "http"        // Set request scheme. Default: http
+	request.ApiName = "ListResourceGroup"
+	request.QueryParams = map[string]string{
+		"AccessKeySecret": c.ApsaraStackSecretKey,
+		"Product":         "ascm",
+		//"Department":        config.Department,
+		//"ResourceGroup":     config.ResourceGroup,
+		"RegionId":          c.ApsaraStackRegion,
+		"Action":            "ListResourceGroup",
+		"Version":           "2019-05-10",
+		"SignatureVersion":  "1.0",
+		"resourceGroupName": c.ResourceSetName,
+	}*/
 	client.AppendUserAgent(Packer, version.FormattedVersion())
 	client.SetReadTimeout(DefaultRequestReadTimeout)
 	c.client = &ClientWrapper{client}
@@ -149,6 +177,9 @@ func (c *ApsaraStackAccessConfig) Prepare(ctx *interpolate.Context) []error {
 	if c.ApsaraStackRegion == "" {
 		errs = append(errs, fmt.Errorf("region option or APSARASTACK_REGION must be provided in template file or environment variables."))
 	}
+	/*if c.ResourceSetName == "" {
+		errs = append(errs,fmt.Errorf("error while fetching resource group details, resource group set name can not be empty"))
+	}*/
 
 	if len(errs) > 0 {
 		return errs
@@ -166,6 +197,15 @@ func (c *ApsaraStackAccessConfig) Config() error {
 	}
 	if c.ApsaraStackProfile == "" {
 		c.ApsaraStackProfile = os.Getenv("APSARASTACK_PROFILE")
+	}
+	c.ResourceSetName = os.Getenv("RESOURCE_GROUP_SET_NAME")
+	if c.Department == "" || c.ResourceGroup == "" {
+		dept, rg, err := getResourceCredentials(c)
+		if err != nil {
+			return err
+		}
+		c.Department = dept
+		c.ResourceGroup = rg
 	}
 	if c.ApsaraStackSharedCredentialsFile == "" {
 		c.ApsaraStackSharedCredentialsFile = os.Getenv("APSARASTACK_SHARED_CREDENTIALS_FILE")
@@ -298,4 +338,70 @@ func (c *ApsaraStackAccessConfig) getTransport() *http.Transport {
 	transport := &http.Transport{}
 	transport.TLSHandshakeTimeout = time.Duration(handshakeTimeout) * time.Second
 	return transport
+}
+
+func getResourceCredentials(config *ApsaraStackAccessConfig) (string, string, error) {
+	endpoint := config.Endpoint
+	if endpoint == "" {
+		return "", "", fmt.Errorf("unable to initialize the ascm client: endpoint or domain is not provided for ascm service")
+	}
+	if endpoint != "" {
+		//endpoints.AddEndpointMapping(config.ApsaraStackRegion, string(connectivity.ASCMCode), endpoint)
+		endpoints.AddEndpointMapping(config.ApsaraStackRegion, "ECS", config.Endpoint)
+	}
+	ascmClient, err := sdk.NewClientWithAccessKey(config.ApsaraStackRegion, config.ApsaraStackAccessKey, config.ApsaraStackSecretKey)
+	if err != nil {
+		return "", "", fmt.Errorf("unable to initialize the ascm client: %#v", err)
+	}
+	ascmClient.AppendUserAgent(Packer, version.FormattedVersion())
+	ascmClient.SetReadTimeout(DefaultRequestReadTimeout)
+	/*
+		ascmClient.AppendUserAgent(connectivity.Terraform, connectivity.TerraformVersion)
+		ascmClient.AppendUserAgent(connectivity.Provider, connectivity.ProviderVersion)
+		ascmClient.AppendUserAgent(connectivity.Module, config.ConfigurationSource)*/
+	ascmClient.SetHTTPSInsecure(config.AS_Insecure)
+	ascmClient.Domain = endpoint
+	if config.Proxy != "" {
+		ascmClient.SetHttpProxy(config.Proxy)
+	}
+	if config.ResourceSetName == "" {
+		return "", "", fmt.Errorf("errror while fetching resource group details, resource group set name can not be empty")
+	}
+	request := requests.NewCommonRequest()
+	request.RegionId = config.ApsaraStackRegion
+	request.Method = "GET"         // Set request method
+	request.Product = "ascm"       // Specify product
+	request.Domain = endpoint      // Location Service will not be enabled if the host is specified. For example, service with a Certification type-Bearer Token should be specified
+	request.Version = "2019-05-10" // Specify product version
+	request.Scheme = "http"        // Set request scheme. Default: http
+	request.ApiName = "ListResourceGroup"
+	request.QueryParams = map[string]string{
+		"AccessKeySecret": config.ApsaraStackSecretKey,
+		"Product":         "ascm",
+		//"Department":        config.Department,
+		//"ResourceGroup":     config.ResourceGroup,
+		"RegionId":          config.ApsaraStackRegion,
+		"Action":            "ListResourceGroup",
+		"Version":           "2019-05-10",
+		"SignatureVersion":  "1.0",
+		"resourceGroupName": config.ResourceSetName,
+	}
+	resp := responses.BaseResponse{}
+	request.TransToAcsRequest()
+	err = ascmClient.DoAction(request, &resp)
+	if err != nil {
+		return "", "", err
+	}
+	response := &ascm.ResourceGroup{}
+	err = json.Unmarshal(resp.GetHttpContentBytes(), response)
+
+	if len(response.Data) != 1 || response.Code != "200" {
+		if len(response.Data) == 0 {
+			return "", "", fmt.Errorf("resource group ID and organization not found for resource set %s", config.ResourceSetName)
+		}
+		return "", "", fmt.Errorf("unable to initialize the ascm client: department or resource_group is not provided")
+	}
+
+	log.Printf("[INFO] Get Resource Group Details Succssfull for Resource set: %s : Department: %s, ResourceGroupId: %s", config.ResourceSetName, fmt.Sprint(response.Data[0].OrganizationID), fmt.Sprint(response.Data[0].ResourceGroupID))
+	return fmt.Sprint(response.Data[0].OrganizationID), fmt.Sprint(response.Data[0].ResourceGroupID), err
 }

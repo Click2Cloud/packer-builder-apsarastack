@@ -1,7 +1,8 @@
 {
   "variables": {
     "access_key": "{{env `APSARASTACK_ACCESS_KEY`}}",
-    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}"
+    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}",
+    "resource_group_set_name": "{{env `RESOURCE_GROUP_SET_NAME`}}"
   },
   "builders": [{
     "type":"apsarastack",
@@ -11,8 +12,6 @@
     "insecure": true,
     "proxy": "http://100.67.27.224:58201",
     "endpoint": "server.asapi.cn-wulan-env82-d01.intra.env17e.shuguang.com/asapi/v3",
-    "department": "11",
-    "resource_group": "27",
     "image_name":"packer_chef",
     "source_image":"ubuntu_18_04_x64_20G_alibase_20200914.raw",
     "instance_type":"ecs.e4.small",

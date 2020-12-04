@@ -1,7 +1,8 @@
 {
   "variables": {
     "access_key": "{{env `APSARASTACK_ACCESS_KEY`}}",
-    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}"
+    "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}",
+    "resource_group_set_name": "{{env `RESOURCE_GROUP_SET_NAME`}}"
   },
   "builders": [
     {
@@ -12,10 +13,8 @@
       "insecure": true,
       "proxy": "http://100.67.76.9:53001",
       "endpoint": "server.asapi.cn-neimeng-env30-d01.intra.env30.shuguang.com/asapi/v3",
-      "department": "54437",
-      "resource_group": "571",
-      "image_name": "packer_basicfortesting",
-      "source_image": "",
+      "image_name": "packer_basic-userdata",
+      "source_image": "ubuntu_16_04_x64_20G_alibase_20200220.vhd",
       "instance_type": "ecs.e4.small",
       "instance_name": "testing123",
       "io_optimized": "true",
@@ -23,6 +22,6 @@
       "vswitch_name": "vswitchnew",
       "security_group_name": "newsec",
       "communicator": "none"
-    }
+   }
   ]
 }
