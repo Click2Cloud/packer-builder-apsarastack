@@ -53,14 +53,15 @@ type ApsaraStackAccessConfig struct {
 
 	// STS access token, can be set through template or by exporting as
 	// environment variable such as `export SECURITY_TOKEN=value`.
-	SecurityToken string   `mapstructure:"security_token" required:"false"`
-	AS_Insecure   bool     `mapstructure:"insecure" required:"true"`
-	Proxy         string   `mapstructure:"proxy" required:"true"`
-	Endpoint      string   `mapstructure:"endpoint" required:"true"`
-	Product       string   `mapstructure:"product" required:"true"`
-	Department    string   `mapstructure:"department" required:"true"`
-	ResourceGroup string   `mapstructure:"resource_group" required:"true"`
-	BootCommand   []string `mapstructure:"boot_command" required:"false"`
+	SecurityToken string `mapstructure:"security_token" required:"false"`
+	AS_Insecure   bool   `mapstructure:"insecure" required:"true"`
+	Proxy         string `mapstructure:"proxy" required:"true"`
+	Endpoint      string `mapstructure:"endpoint" required:"true"`
+	Product       string `mapstructure:"product" required:"true"`
+	Department    string `mapstructure:"department" required:"true"`
+	ResourceGroup string `mapstructure:"resource_group" required:"true"`
+
+	BootCommand []string `mapstructure:"boot_command" required:"false"`
 
 	client *ClientWrapper
 }
@@ -198,7 +199,9 @@ func (c *ApsaraStackAccessConfig) Config() error {
 	if c.ApsaraStackProfile == "" {
 		c.ApsaraStackProfile = os.Getenv("APSARASTACK_PROFILE")
 	}
-	c.ResourceSetName = os.Getenv("RESOURCE_GROUP_SET_NAME")
+	if c.ResourceSetName == "" {
+		c.ResourceSetName = os.Getenv("RESOURCE_GROUP_SET_NAME")
+	}
 	if c.Department == "" || c.ResourceGroup == "" {
 		dept, rg, err := getResourceCredentials(c)
 		if err != nil {

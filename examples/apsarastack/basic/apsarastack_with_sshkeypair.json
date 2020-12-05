@@ -8,6 +8,7 @@
     "type": "apsarastack",
     "access_key": "{{user `access_key`}}",
     "secret_key": "{{user `secret_key`}}",
+      "resource_group_set_name": "{{user `resource_group_set_name`}}",
     "region": "cn-neimeng-env30-d01",
     "insecure": true,
     "proxy":  "http://100.67.76.9:53001",
