@@ -2,13 +2,13 @@
   "variables": {
     "access_key": "{{env `APSARASTACK_ACCESS_KEY`}}",
     "secret_key": "{{env `APSARASTACK_SECRET_KEY`}}",
-      "resource_group_set_name": "ResourceSet(wzw)"
+      "resource_group_set_name": "{{env `RESOURCE_GROUP_SET_NAME`}}"
   },
   "builders": [{
     "type": "apsarastack",
     "access_key": "{{user `access_key`}}",
     "secret_key": "{{user `secret_key`}}",
-    "resource_group_set_name": "ResourceSet(wzw)",
+    "resource_group_set_name": "{{user `resource_group_set_name`}}",
     "region": "cn-neimeng-env30-d01",
     "insecure": true,
     "proxy": "http://100.67.76.9:53001",
