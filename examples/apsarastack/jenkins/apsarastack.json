@@ -19,6 +19,7 @@
     "io_optimized":"true",
     "image_force_delete":"true",
     "communicator": "none",
-    "user_data_file": "examples/apsarastack/jenkins/jenkins.sh"
+    "user_data_file": "examples/apsarastack/jenkins/jenkins.sh",
+    "zone_id": "cn-neimeng-env30-amtest30001-a"
   }]
 }

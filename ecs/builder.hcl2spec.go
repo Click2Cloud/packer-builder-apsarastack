@@ -61,6 +61,13 @@ type FlatConfig struct {
 	ApsaraStackProfile                   *string                     `mapstructure:"profile" required:"false" cty:"profile" hcl:"profile"`
 	ApsaraStackSharedCredentialsFile     *string                     `mapstructure:"shared_credentials_file" required:"false" cty:"shared_credentials_file" hcl:"shared_credentials_file"`
 	SecurityToken                        *string                     `mapstructure:"security_token" required:"false" cty:"security_token" hcl:"security_token"`
+	ResourceSetName                      *string                     `mapstructure:"resource_group_set_name" required:"true" cty:"resource_group_set_name" hcl:"resource_group_set_name"`
+	Endpoint                             *string                     `mapstructure:"endpoint" required:"false" cty:"endpoint" hcl:"endpoint"`
+	Proxy                                *bool                       `mapstructure:"proxy" cty:"proxy" hcl:"proxy"`
+	Product                              *string                     `mapstructure:"product" cty:"product" hcl:"product"`
+	ResourceGroup                        *string                     `mapstructure:"resource_group" cty:"resource_group" hcl:"resource_group"`
+	Department                           *string                     `mapstructure:"department" cty:"department" hcl:"department"`
+	AS_Insecure                          *string                     `mapstructure:"insecure" cty:"insecure" hcl:"insecure"`
 	ApsaraStackImageName                 *string                     `mapstructure:"image_name" required:"true" cty:"image_name" hcl:"image_name"`
 	ApsaraStackImageVersion              *string                     `mapstructure:"image_version" required:"false" cty:"image_version" hcl:"image_version"`
 	ApsaraStackImageDescription          *string                     `mapstructure:"image_description" required:"false" cty:"image_description" hcl:"image_description"`
@@ -100,7 +107,7 @@ type FlatConfig struct {
 	Type                                 *string                     `mapstructure:"communicator" cty:"communicator" hcl:"communicator"`
 	PauseBeforeConnect                   *string                     `mapstructure:"pause_before_connecting" cty:"pause_before_connecting" hcl:"pause_before_connecting"`
 
-	SSHPrivateIp                         *bool                       `mapstructure:"ssh_private_ip" required:"false" cty:"ssh_private_ip" hcl:"ssh_private_ip"`
+	SSHPrivateIp *bool `mapstructure:"ssh_private_ip" required:"false" cty:"ssh_private_ip" hcl:"ssh_private_ip"`
 }
 
 // FlatMapstructure returns a new FlatConfig.

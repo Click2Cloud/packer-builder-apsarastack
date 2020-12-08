@@ -1,15 +1,15 @@
 package ecs
 
 import (
-"context"
-"fmt"
-"os"
-"runtime"
+	"context"
+	"fmt"
+	"os"
+	"runtime"
 
-"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
-"github.com/hashicorp/packer/helper/communicator"
-"github.com/hashicorp/packer/helper/multistep"
-"github.com/hashicorp/packer/packer"
+	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
+	"github.com/hashicorp/packer/helper/communicator"
+	"github.com/hashicorp/packer/helper/multistep"
+	"github.com/hashicorp/packer/packer"
 )
 
 type stepConfigApsaraStackKeyPair struct {
@@ -104,6 +104,7 @@ func (s *stepConfigApsaraStackKeyPair) Run(ctx context.Context, state multistep.
 }
 
 func (s *stepConfigApsaraStackKeyPair) Cleanup(state multistep.StateBag) {
+	config := state.Get("config").(*Config)
 	// If no key name is set, then we never created it, so just return
 	// If we used an SSH private key file, do not go about deleting
 	// keypairs
@@ -118,6 +119,8 @@ func (s *stepConfigApsaraStackKeyPair) Cleanup(state multistep.StateBag) {
 	ui.Say("Deleting temporary keypair...")
 
 	deleteKeyPairsRequest := ecs.CreateDeleteKeyPairsRequest()
+	deleteKeyPairsRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
+	deleteKeyPairsRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
 	deleteKeyPairsRequest.RegionId = s.RegionId
 	deleteKeyPairsRequest.KeyPairNames = fmt.Sprintf("[\"%s\"]", s.keyName)
@@ -135,4 +138,3 @@ func (s *stepConfigApsaraStackKeyPair) Cleanup(state multistep.StateBag) {
 		}
 	}
 }
-
