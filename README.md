@@ -70,7 +70,8 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
       "source_image": "centos_7_03_64_20G_alibase_20170818.vhd",
       "io_optimized": "true",
       "communicator": "none",
-      "user_data" :"yum install redis.x86_64 -y"
+      "user_data" :"yum install redis.x86_64 -y",
+      "zone_id": "cn-neimeng-env30-amtest30001-a"
 
     }
   ]
@@ -89,7 +90,7 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "type": "apsarastack",
     "access_key": "{{user `access_key`}}",
     "secret_key": "{{user `secret_key`}}",
-      "resource_group_set_name": "{{user `resource_group_set_name`}}",
+    "resource_group_set_name": "{{user `resource_group_set_name`}}",
     "region": "cn-wulan-env82-d01",
     "insecure": true,
     "proxy": "http://100.67.27.224:58201",
@@ -100,7 +101,8 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "io_optimized":"true",
     "internet_charge_type":"PayByTraffic",
     "communicator": "none",
-    "user_data_file": "examples/apsarastack/basic/winrm_enable_userdata.ps1"
+    "user_data_file": "examples/apsarastack/basic/winrm_enable_userdata.ps1",
+    "zone_id": "cn-neimeng-env30-amtest30001-a"
   }]
 }
 ```
@@ -116,7 +118,7 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "type":"apsarastack",
     "access_key":"{{user `access_key`}}",
     "secret_key":"{{user `secret_key`}}",
-"resource_group_set_name": "{{user `resource_group_set_name`}}",
+    "resource_group_set_name": "{{user `resource_group_set_name`}}",
     "region": "cn-wulan-env82-d01",
     "insecure": true,
     "proxy": "http://100.67.27.224:58201",
@@ -126,6 +128,7 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "communicator": "none",
     "instance_type":"ecs.e4.small",
     "io_optimized":"true",
+    "zone_id": "cn-neimeng-env30-amtest30001-a",
     "image_disk_mappings":[{"disk_name":"data1","disk_size":20},{"disk_name":"data1","disk_size":20,"disk_device":"/dev/xvdz"}]
   }]
 }
@@ -151,6 +154,7 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "source_image":"m-0rv0282g8kfo8feoi1tu",
     "communicator": "none",
     "instance_type":"ecs.e4.small",
+    "zone_id": "cn-neimeng-env30-amtest30001-a",
     "io_optimized":"true"
      }]
 }
@@ -168,7 +172,7 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "type": "apsarastack",
     "access_key": "{{user `access_key`}}",
     "secret_key": "{{user `secret_key`}}",
-      "resource_group_set_name": "{{user `resource_group_set_name`}}",
+    "resource_group_set_name": "{{user `resource_group_set_name`}}",
     "region": "cn-neimeng-env30-d01",
     "insecure": true,
     "proxy": "http://100.67.76.9:53001",
@@ -178,6 +182,7 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "instance_type":"ecs.e4.small",
     "io_optimized":"true",
     "vpc_name": "Vpc_packer",
+    "zone_id": "cn-neimeng-env30-amtest30001-a",
     "vpc_cidr_block": "172.16.0.0/16",
     "communicator": "none"
   }]
@@ -210,7 +215,8 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
       "vpc_id": "vpc-2gi8gb07p26sy2ihqr62b",
       "vswitch_id": "vsw-2gil89e3z69pr7pnrhsar",
       "communicator": "none",
-      "security_group_id": "sg-2gi013gr5snengy651wv"
+      "security_group_id": "sg-2gi013gr5snengy651wv",
+      "zone_id": "cn-neimeng-env30-amtest30001-a"
     }
   ]
 }
@@ -227,7 +233,7 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "type": "apsarastack",
     "access_key": "{{user `access_key`}}",
     "secret_key": "{{user `secret_key`}}",
-      "resource_group_set_name": "{{user `resource_group_set_name`}}",
+    "resource_group_set_name": "{{user `resource_group_set_name`}}",
     "region": "cn-neimeng-env30-d01",
     "insecure": true,
     "proxy":  "http://100.67.76.9:53001",
@@ -240,7 +246,8 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "io_optimized":"true",
     "communicator": "ssh",
     "ssh_username": "root",
-    "user_data_file": "examples/apsarastack/basic/user_data.sh"
+    "zone_id": "cn-neimeng-env30-amtest30001-a",
+    "user_data_file": "examples/apsarastack/basic/user_data.sh"   
   }],
   "provisioners": [{
     "type": "shell",
@@ -265,7 +272,7 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "type": "apsarastack",
     "access_key": "{{user `access_key`}}",
     "secret_key": "{{user `secret_key`}}",
-      "resource_group_set_name": "{{user `resource_group_set_name`}}",
+    "resource_group_set_name": "{{user `resource_group_set_name`}}",
     "region": "cn-neimeng-env30-d01",
     "insecure": true,
     "proxy":  "http://100.67.76.9:53001",
@@ -279,6 +286,7 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "communicator": "ssh",
     "ssh_username": "root",
     "ssh_password": "Test!12345",
+    "zone_id": "cn-neimeng-env30-amtest30001-a",
     "user_data_file": "examples/apsarastack/basic/user_data.sh"
   }],
   "provisioners": [{
@@ -305,7 +313,7 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "type": "apsarastack",
     "access_key": "{{user `access_key`}}",
     "secret_key": "{{user `secret_key`}}",
-      "resource_group_set_name": "{{user `resource_group_set_name`}}",
+    "resource_group_set_name": "{{user `resource_group_set_name`}}",
     "region": "cn-neimeng-env30-d01",
     "insecure": true,
     "proxy": "http://100.67.76.9:53001",
@@ -319,6 +327,7 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "communicator": "ssh",
     "ssh_username": "root",
     "ssh_password": "Test!12345",
+    "zone_id": "cn-neimeng-env30-amtest30001-a",
     "user_data_file": "examples/apsarastack/ansible/user_data.sh"
   }],
   "provisioners": [
