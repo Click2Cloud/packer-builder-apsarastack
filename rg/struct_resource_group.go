@@ -1,4 +1,4 @@
-package ascm
+package rg
 
 //type ResourceGroup struct {
 //	OrganizationId                  			string              `json:"OrganizationId" xml:"OrganizationId"`

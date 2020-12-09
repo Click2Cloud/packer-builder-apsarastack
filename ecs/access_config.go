@@ -7,7 +7,8 @@ import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/endpoints"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
-	"github.com/aliyun/packer-builder-apsarastack/ascm"
+	//"github.com/aliyun/packer-builder-apsarastack/ascm"
+	"github.com/aliyun/packer-builder-apsarastack/rg"
 	"log"
 	"net/http"
 	"strconv"
@@ -346,26 +347,26 @@ func (c *ApsaraStackAccessConfig) getTransport() *http.Transport {
 func getResourceCredentials(config *ApsaraStackAccessConfig) (string, string, error) {
 	endpoint := config.Endpoint
 	if endpoint == "" {
-		return "", "", fmt.Errorf("unable to initialize the ascm client: endpoint or domain is not provided for ascm service")
+		return "", "", fmt.Errorf("unable to initialize the rg client: endpoint or domain is not provided for rg service")
 	}
 	if endpoint != "" {
 		//endpoints.AddEndpointMapping(config.ApsaraStackRegion, string(connectivity.ASCMCode), endpoint)
 		endpoints.AddEndpointMapping(config.ApsaraStackRegion, "ECS", config.Endpoint)
 	}
-	ascmClient, err := sdk.NewClientWithAccessKey(config.ApsaraStackRegion, config.ApsaraStackAccessKey, config.ApsaraStackSecretKey)
+	rgClient, err := sdk.NewClientWithAccessKey(config.ApsaraStackRegion, config.ApsaraStackAccessKey, config.ApsaraStackSecretKey)
 	if err != nil {
-		return "", "", fmt.Errorf("unable to initialize the ascm client: %#v", err)
+		return "", "", fmt.Errorf("unable to initialize the client: %#v", err)
 	}
-	ascmClient.AppendUserAgent(Packer, version.FormattedVersion())
-	ascmClient.SetReadTimeout(DefaultRequestReadTimeout)
+	rgClient.AppendUserAgent(Packer, version.FormattedVersion())
+	rgClient.SetReadTimeout(DefaultRequestReadTimeout)
 	/*
 		ascmClient.AppendUserAgent(connectivity.Terraform, connectivity.TerraformVersion)
 		ascmClient.AppendUserAgent(connectivity.Provider, connectivity.ProviderVersion)
 		ascmClient.AppendUserAgent(connectivity.Module, config.ConfigurationSource)*/
-	ascmClient.SetHTTPSInsecure(config.AS_Insecure)
-	ascmClient.Domain = endpoint
+	rgClient.SetHTTPSInsecure(config.AS_Insecure)
+	rgClient.Domain = endpoint
 	if config.Proxy != "" {
-		ascmClient.SetHttpProxy(config.Proxy)
+		rgClient.SetHttpProxy(config.Proxy)
 	}
 	if config.ResourceSetName == "" {
 		return "", "", fmt.Errorf("errror while fetching resource group details, resource group set name can not be empty")
@@ -373,14 +374,14 @@ func getResourceCredentials(config *ApsaraStackAccessConfig) (string, string, er
 	request := requests.NewCommonRequest()
 	request.RegionId = config.ApsaraStackRegion
 	request.Method = "GET"         // Set request method
-	request.Product = "ascm"       // Specify product
+	request.Product = "rg"         // Specify product
 	request.Domain = endpoint      // Location Service will not be enabled if the host is specified. For example, service with a Certification type-Bearer Token should be specified
 	request.Version = "2019-05-10" // Specify product version
 	request.Scheme = "http"        // Set request scheme. Default: http
 	request.ApiName = "ListResourceGroup"
 	request.QueryParams = map[string]string{
 		"AccessKeySecret": config.ApsaraStackSecretKey,
-		"Product":         "ascm",
+		"Product":         "rg",
 		//"Department":        config.Department,
 		//"ResourceGroup":     config.ResourceGroup,
 		"RegionId":          config.ApsaraStackRegion,
@@ -391,18 +392,18 @@ func getResourceCredentials(config *ApsaraStackAccessConfig) (string, string, er
 	}
 	resp := responses.BaseResponse{}
 	request.TransToAcsRequest()
-	err = ascmClient.DoAction(request, &resp)
+	err = rgClient.DoAction(request, &resp)
 	if err != nil {
 		return "", "", err
 	}
-	response := &ascm.ResourceGroup{}
+	response := &rg.ResourceGroup{}
 	err = json.Unmarshal(resp.GetHttpContentBytes(), response)
 
 	if len(response.Data) != 1 || response.Code != "200" {
 		if len(response.Data) == 0 {
 			return "", "", fmt.Errorf("resource group ID and organization not found for resource set %s", config.ResourceSetName)
 		}
-		return "", "", fmt.Errorf("unable to initialize the ascm client: department or resource_group is not provided")
+		return "", "", fmt.Errorf("unable to initialize the  client: department or resource_group is not provided")
 	}
 
 	log.Printf("[INFO] Get Resource Group Details Succssfull for Resource set: %s : Department: %s, ResourceGroupId: %s", config.ResourceSetName, fmt.Sprint(response.Data[0].OrganizationID), fmt.Sprint(response.Data[0].ResourceGroupID))
