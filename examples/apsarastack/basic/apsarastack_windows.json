@@ -16,7 +16,8 @@
     "image_name":"packer_test",
     "source_image":"win2019_1809_x64_dtc_zh-cn_40G_alibase_20200314.vhd",
     "instance_type":"ecs.e4.small",
-    "io_optimized":"true",
+    "io_optimized": "true",
+    "protocol": "https",
     "communicator": "none",
     "user_data_file": "examples/apsarastack/basic/winrm_enable_userdata.ps1",
     "zone_id": "cn-neimeng-env30-amtest30001-a"

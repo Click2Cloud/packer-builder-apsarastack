@@ -19,6 +19,7 @@
       "instance_type": "ecs.e4.small",
       "instance_name": "testing123",
       "io_optimized": "true",
+      "protocol": "https",
       "vpc_name": "newvpc",
       "vswitch_name": "vswitchnew",
       "vpc_cidr_block": "172.16.0.0/16",

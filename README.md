@@ -69,6 +69,7 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
       "instance_type": "ecs.se1.large",
       "source_image": "centos_7_03_64_20G_alibase_20170818.vhd",
       "io_optimized": "true",
+           "protocol": "https",
       "communicator": "none",
       "user_data" :"yum install redis.x86_64 -y",
       "zone_id": "cn-neimeng-env30-amtest30001-a"
@@ -98,7 +99,8 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "image_name":"packer_test",
     "source_image":"win2012r2_9600_x64_dtc_en-us_40G_alibase_20200314.vhd",
     "instance_type":"ecs.xn4.small",
-    "io_optimized":"true",
+     "io_optimized": "true",
+          "protocol": "https",
     "internet_charge_type":"PayByTraffic",
     "communicator": "none",
     "user_data_file": "examples/apsarastack/basic/winrm_enable_userdata.ps1",
@@ -127,7 +129,8 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "source_image":"centos_6_08_32_40G_alibase_20170710.raw",
     "communicator": "none",
     "instance_type":"ecs.e4.small",
-    "io_optimized":"true",
+     "io_optimized": "true",
+          "protocol": "https",
     "zone_id": "cn-neimeng-env30-amtest30001-a",
     "image_disk_mappings":[{"disk_name":"data1","disk_size":20},{"disk_name":"data1","disk_size":20,"disk_device":"/dev/xvdz"}]
   }]
@@ -155,7 +158,8 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "communicator": "none",
     "instance_type":"ecs.e4.small",
     "zone_id": "cn-neimeng-env30-amtest30001-a",
-    "io_optimized":"true"
+    "io_optimized": "true",
+         "protocol": "https"
      }]
 }
 ```
@@ -180,7 +184,8 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "image_name":"packer-custom",
     "source_image":"centos_7_7_x64_20G_alibase_20200220.vhd",
     "instance_type":"ecs.e4.small",
-    "io_optimized":"true",
+     "io_optimized": "true",
+          "protocol": "https",
     "vpc_name": "Vpc_packer",
     "zone_id": "cn-neimeng-env30-amtest30001-a",
     "vpc_cidr_block": "172.16.0.0/16",
@@ -210,7 +215,8 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
       "source_image": "centos_7_7_x64_20G_alibase_20200220.vhd",
       "instance_type": "ecs.se1.large",
       "instance_name": "testing123",
-      "io_optimized": "true",
+       "io_optimized": "true",
+            "protocol": "https",
       "description": "fortetsting",
       "vpc_id": "vpc-2gi8gb07p26sy2ihqr62b",
       "vswitch_id": "vsw-2gil89e3z69pr7pnrhsar",
@@ -243,7 +249,8 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "instance_type":"ecs.e4.small",
     "vpc_id": "vpc-2gi8gb07p26sy2ihqr62b",
     "vswitch_id": "vsw-2gil89e3z69pr7pnrhsar",
-    "io_optimized":"true",
+     "io_optimized": "true",
+          "protocol": "https",
     "communicator": "ssh",
     "ssh_username": "root",
     "zone_id": "cn-neimeng-env30-amtest30001-a",
@@ -280,7 +287,8 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "image_name":"packer-provisioner",
     "source_image":"ubuntu_16_04_x64_20G_alibase_20200220.vhd",
     "instance_type":"ecs.e4.small",
-    "io_optimized":"true",
+    "io_optimized": "true",
+         "protocol": "https",
     "vpc_id": "vpc-2gi8gb07p26sy2ihqr62b",
     "vswitch_id": "vsw-2gil89e3z69pr7pnrhsar",
     "communicator": "ssh",
@@ -321,7 +329,8 @@ them into the folder under the packer **PATH** such as **/usr/local/packer**.
     "image_name":"packer-yml-userdata",
     "source_image":"ubuntu_16_04_x64_20G_alibase_20200220.vhd",
     "instance_type":"ecs.e4.small",
-    "io_optimized":"true",
+    "io_optimized": "true",
+         "protocol": "https",
     "vpc_id": "vpc-2gi8gb07p26sy2ihqr62b",
     "vswitch_id": "vsw-2gil89e3z69pr7pnrhsar",
     "communicator": "ssh",
