@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 	"github.com/hashicorp/packer/helper/multistep"
@@ -59,12 +60,19 @@ func (s *stepDeleteApsaraStackImageSnapshots) deleteImageAndSnapshots(state mult
 	ui := state.Get("ui").(packer.Ui)
 
 	describeImagesRequest := ecs.CreateDescribeImagesRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		describeImagesRequest.Scheme = "https"
+	} else {
+		describeImagesRequest.Scheme = "http"
+	}
 	describeImagesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
-	describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs","Department": config.Department, "ResourceGroup": config.ResourceGroup}
+	describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 	//describeImagesRequest.ImageOwnerAlias="self"
+
 	describeImagesRequest.RegionId = region
 	describeImagesRequest.ImageName = imageName
 	describeImagesRequest.Status = ImageStatusQueried
+
 	imageResponse, _ := client.DescribeImages(describeImagesRequest)
 	images := imageResponse.Images.Image
 	if len(images) < 1 {
@@ -80,6 +88,11 @@ func (s *stepDeleteApsaraStackImageSnapshots) deleteImageAndSnapshots(state mult
 		}
 
 		deleteImageRequest := ecs.CreateDeleteImageRequest()
+		if strings.ToLower(config.Protocol) == "https" {
+			deleteImageRequest.Scheme = "https"
+		} else {
+			deleteImageRequest.Scheme = "http"
+		}
 		deleteImageRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 		deleteImageRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -93,6 +106,12 @@ func (s *stepDeleteApsaraStackImageSnapshots) deleteImageAndSnapshots(state mult
 		if s.ApsaraStackImageForceDeleteSnapshots {
 			for _, diskDevice := range image.DiskDeviceMappings.DiskDeviceMapping {
 				deleteSnapshotRequest := ecs.CreateDeleteSnapshotRequest()
+				if strings.ToLower(config.Protocol) == "https" {
+					deleteSnapshotRequest.Scheme = "https"
+				} else {
+					deleteSnapshotRequest.Scheme = "http"
+				}
+
 				deleteSnapshotRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 				deleteSnapshotRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 

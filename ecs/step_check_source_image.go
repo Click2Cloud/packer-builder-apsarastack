@@ -6,6 +6,7 @@ import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 	"github.com/hashicorp/packer/helper/multistep"
 	"github.com/hashicorp/packer/packer"
+	"strings"
 )
 
 type stepCheckApsaraStackSourceImage struct {
@@ -18,8 +19,13 @@ func (s *stepCheckApsaraStackSourceImage) Run(ctx context.Context, state multist
 	ui := state.Get("ui").(packer.Ui)
 
 	describeImagesRequest := ecs.CreateDescribeImagesRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		describeImagesRequest.Scheme = "https"
+	} else {
+		describeImagesRequest.Scheme = "http"
+	}
 	describeImagesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
-	describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs","Department": config.Department, "ResourceGroup": config.ResourceGroup}
+	describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 	//describeImagesRequest.Headers = map[string]string{"RegionId": }
 	//describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": client.SecretKey, "Product": "ecs"}
 
@@ -38,10 +44,9 @@ func (s *stepCheckApsaraStackSourceImage) Run(ctx context.Context, state multist
 
 	images := imagesResponse.Images.Image
 
-
 	// Describe marketplace image
 	{
-	describeImagesRequest.ImageOwnerAlias = "self"
+		describeImagesRequest.ImageOwnerAlias = "self"
 		marketImagesResponse, err := client.DescribeImages(describeImagesRequest)
 		if err != nil {
 			return halt(state, err, "Error querying ApsaraStack system image")
@@ -50,18 +55,18 @@ func (s *stepCheckApsaraStackSourceImage) Run(ctx context.Context, state multist
 		marketImages := marketImagesResponse.Images.Image
 		if len(marketImages) > 0 {
 			images = append(images, marketImages...)
-		}}
+		}
+	}
 	describeImagesRequest.ImageOwnerAlias = "system"
-		marketImagesResponse, err := client.DescribeImages(describeImagesRequest)
-		if err != nil {
-			return halt(state, err, "Error querying ApsaraStack system image")
-		}
+	marketImagesResponse, err := client.DescribeImages(describeImagesRequest)
+	if err != nil {
+		return halt(state, err, "Error querying ApsaraStack system image")
+	}
 
-		marketImages := marketImagesResponse.Images.Image
-		if len(marketImages) > 0 {
-			images = append(images, marketImages...)
-		}
-
+	marketImages := marketImagesResponse.Images.Image
+	if len(marketImages) > 0 {
+		images = append(images, marketImages...)
+	}
 
 	if len(images) == 0 {
 		err := fmt.Errorf("No ApsaraStack image was found matching filters: %v", config.ApsaraStackSourceImage)

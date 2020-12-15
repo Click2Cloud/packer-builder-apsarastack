@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/vpc"
+	"strings"
 
 	//"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 	"github.com/hashicorp/packer/common/uuid"
@@ -47,6 +48,11 @@ func (s *stepConfigApsaraStackVPC) Run(ctx context.Context, state multistep.Stat
 	}
 	if len(s.VpcId) != 0 {
 		describeVpcsRequest := vpc.CreateDescribeVpcsRequest()
+		if strings.ToLower(config.Protocol) == "https" {
+			describeVpcsRequest.Scheme = "https"
+		} else {
+			describeVpcsRequest.Scheme = "http"
+		}
 		describeVpcsRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 		describeVpcsRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -72,6 +78,12 @@ func (s *stepConfigApsaraStackVPC) Run(ctx context.Context, state multistep.Stat
 	ui.Say("Creating vpc...")
 
 	createVpcRequest := s.buildCreateVpcRequest(state)
+	if strings.ToLower(config.Protocol) == "https" {
+		createVpcRequest.Scheme = "https"
+	} else {
+		createVpcRequest.Scheme = "http"
+	}
+
 	createVpcRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	createVpcRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -89,6 +101,11 @@ func (s *stepConfigApsaraStackVPC) Run(ctx context.Context, state multistep.Stat
 	_, err = client.WaitForExpected(&WaitForExpectArgs{
 		RequestFunc: func() (responses.AcsResponse, error) {
 			request := vpc.CreateDescribeVpcsRequest()
+			if strings.ToLower(config.Protocol) == "https" {
+				request.Scheme = "https"
+			} else {
+				request.Scheme = "http"
+			}
 			request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 			request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -147,6 +164,11 @@ func (s *stepConfigApsaraStackVPC) Cleanup(state multistep.StateBag) {
 	_, err = client.WaitForExpected(&WaitForExpectArgs{
 		RequestFunc: func() (responses.AcsResponse, error) {
 			request := vpc.CreateDeleteVpcRequest()
+			if strings.ToLower(config.Protocol) == "https" {
+				request.Scheme = "https"
+			} else {
+				request.Scheme = "http"
+			}
 			request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 			request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -166,6 +188,11 @@ func (s *stepConfigApsaraStackVPC) buildCreateVpcRequest(state multistep.StateBa
 	config := state.Get("config").(*Config)
 
 	request := vpc.CreateCreateVpcRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		request.Scheme = "https"
+	} else {
+		request.Scheme = "http"
+	}
 	request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 

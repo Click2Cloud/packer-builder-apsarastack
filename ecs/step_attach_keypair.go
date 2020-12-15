@@ -3,6 +3,7 @@ package ecs
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
@@ -33,6 +34,11 @@ func (s *stepAttachKeyPair) Run(ctx context.Context, state multistep.StateBag) m
 	_, err := client.WaitForExpected(&WaitForExpectArgs{
 		RequestFunc: func() (responses.AcsResponse, error) {
 			request := ecs.CreateAttachKeyPairRequest()
+			if strings.ToLower(config.Protocol) == "https" {
+				request.Scheme = "https"
+			} else {
+				request.Scheme = "http"
+			}
 			request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 			request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -63,6 +69,11 @@ func (s *stepAttachKeyPair) Cleanup(state multistep.StateBag) {
 	}
 
 	detachKeyPairRequest := ecs.CreateDetachKeyPairRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		detachKeyPairRequest.Scheme = "https"
+	} else {
+		detachKeyPairRequest.Scheme = "http"
+	}
 	detachKeyPairRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	detachKeyPairRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 

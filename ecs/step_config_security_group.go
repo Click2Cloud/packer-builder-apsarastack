@@ -3,6 +3,7 @@ package ecs
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
@@ -36,6 +37,11 @@ func (s *stepConfigApsaraStackSecurityGroup) Run(ctx context.Context, state mult
 
 	if len(s.SecurityGroupId) != 0 {
 		describeSecurityGroupsRequest := ecs.CreateDescribeSecurityGroupsRequest()
+		if strings.ToLower(config.Protocol) == "https" {
+			describeSecurityGroupsRequest.Scheme = "https"
+		} else {
+			describeSecurityGroupsRequest.Scheme = "http"
+		}
 		describeSecurityGroupsRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 		describeSecurityGroupsRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -87,6 +93,11 @@ func (s *stepConfigApsaraStackSecurityGroup) Run(ctx context.Context, state mult
 	s.SecurityGroupId = securityGroupId
 
 	authorizeSecurityGroupEgressRequest := ecs.CreateAuthorizeSecurityGroupEgressRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		authorizeSecurityGroupEgressRequest.Scheme = "https"
+	} else {
+		authorizeSecurityGroupEgressRequest.Scheme = "http"
+	}
 	authorizeSecurityGroupEgressRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	authorizeSecurityGroupEgressRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -102,6 +113,11 @@ func (s *stepConfigApsaraStackSecurityGroup) Run(ctx context.Context, state mult
 	}
 
 	authorizeSecurityGroupRequest := ecs.CreateAuthorizeSecurityGroupRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		authorizeSecurityGroupRequest.Scheme = "https"
+	} else {
+		authorizeSecurityGroupRequest.Scheme = "http"
+	}
 	authorizeSecurityGroupRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	authorizeSecurityGroupRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -133,6 +149,11 @@ func (s *stepConfigApsaraStackSecurityGroup) Cleanup(state multistep.StateBag) {
 	_, err := client.WaitForExpected(&WaitForExpectArgs{
 		RequestFunc: func() (responses.AcsResponse, error) {
 			request := ecs.CreateDeleteSecurityGroupRequest()
+			if strings.ToLower(config.Protocol) == "https" {
+				request.Scheme = "https"
+			} else {
+				request.Scheme = "http"
+			}
 			request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 			request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -154,6 +175,11 @@ func (s *stepConfigApsaraStackSecurityGroup) buildCreateSecurityGroupRequest(sta
 
 	config := state.Get("config").(*Config)
 	request := ecs.CreateCreateSecurityGroupRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		request.Scheme = "https"
+	} else {
+		request.Scheme = "http"
+	}
 	request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 

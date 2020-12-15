@@ -3,6 +3,7 @@ package ecs
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 	"github.com/hashicorp/packer/helper/multistep"
@@ -35,6 +36,11 @@ func (s *stepCreateTags) Run(ctx context.Context, state multistep.StateBag) mult
 	}
 
 	addTagsRequest := ecs.CreateAddTagsRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		addTagsRequest.Scheme = "https"
+	} else {
+		addTagsRequest.Scheme = "http"
+	}
 	addTagsRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	addTagsRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.Department}
 
@@ -50,6 +56,11 @@ func (s *stepCreateTags) Run(ctx context.Context, state multistep.StateBag) mult
 	for _, snapshotId := range snapshotIds {
 		ui.Say(fmt.Sprintf("Adding tags(%s) to snapshot: %s", s.Tags, snapshotId))
 		addTagsRequest := ecs.CreateAddTagsRequest()
+		if strings.ToLower(config.Protocol) == "https" {
+			addTagsRequest.Scheme = "https"
+		} else {
+			addTagsRequest.Scheme = "http"
+		}
 		addTagsRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 		addTagsRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.Department}
 

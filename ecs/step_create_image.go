@@ -3,6 +3,7 @@ package ecs
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/hashicorp/packer/common/random"
@@ -104,6 +105,11 @@ func (s *stepCreateApsaraStackImage) Cleanup(state multistep.StateBag) {
 	}
 
 	deleteImageRequest := ecs.CreateDeleteImageRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		deleteImageRequest.Scheme = "https"
+	} else {
+		deleteImageRequest.Scheme = "http"
+	}
 	deleteImageRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	deleteImageRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -117,6 +123,11 @@ func (s *stepCreateApsaraStackImage) Cleanup(state multistep.StateBag) {
 	//Delete the snapshot of this image
 	for _, diskDevices := range s.image.DiskDeviceMappings.DiskDeviceMapping {
 		deleteSnapshotRequest := ecs.CreateDeleteSnapshotRequest()
+		if strings.ToLower(config.Protocol) == "https" {
+			deleteSnapshotRequest.Scheme = "https"
+		} else {
+			deleteSnapshotRequest.Scheme = "http"
+		}
 		deleteSnapshotRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 		deleteSnapshotRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -132,6 +143,11 @@ func (s *stepCreateApsaraStackImage) buildCreateImageRequest(state multistep.Sta
 	config := state.Get("config").(*Config)
 
 	request := ecs.CreateCreateImageRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		request.Scheme = "https"
+	} else {
+		request.Scheme = "http"
+	}
 	request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 

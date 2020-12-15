@@ -4,10 +4,10 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"github.com/hashicorp/packer/common/uuid"
 	"io/ioutil"
 	"strconv"
-
-	"github.com/hashicorp/packer/common/uuid"
+	"strings"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
@@ -69,6 +69,11 @@ func (s *stepCreateApsaraStackInstance) Run(ctx context.Context, state multistep
 	}
 	ui.Say("[EXTRA] Creation Complete, describing instance...")
 	describeInstancesRequest := ecs.CreateDescribeInstancesRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		describeInstancesRequest.Scheme = "https"
+	} else {
+		describeInstancesRequest.Scheme = "http"
+	}
 	describeInstancesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	describeInstancesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -103,6 +108,12 @@ func (s *stepCreateApsaraStackInstance) Cleanup(state multistep.StateBag) {
 	_, err := client.WaitForExpected(&WaitForExpectArgs{
 		RequestFunc: func() (responses.AcsResponse, error) {
 			request := ecs.CreateDeleteInstanceRequest()
+			if strings.ToLower(config.Protocol) == "https" {
+				request.Scheme = "https"
+			} else {
+				request.Scheme = "http"
+			}
+
 			request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 			request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -121,7 +132,13 @@ func (s *stepCreateApsaraStackInstance) Cleanup(state multistep.StateBag) {
 
 func (s *stepCreateApsaraStackInstance) buildCreateInstanceRequest(state multistep.StateBag) (*ecs.RunInstancesRequest, error) {
 	request := ecs.CreateRunInstancesRequest()
+
 	config := state.Get("config").(*Config)
+	if strings.ToLower(config.Protocol) == "https" {
+		request.Scheme = "https"
+	} else {
+		request.Scheme = "http"
+	}
 	request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -149,9 +166,6 @@ func (s *stepCreateApsaraStackInstance) buildCreateInstanceRequest(state multist
 
 		request.UserData = userData
 	} else {
-		if s.InternetChargeType == "" {
-			s.InternetChargeType = "PayByTraffic"
-		}
 
 		if s.InternetMaxBandwidthOut == 0 {
 			s.InternetMaxBandwidthOut = 5
@@ -211,10 +225,33 @@ func (s *stepCreateApsaraStackInstance) getUserData(state multistep.StateBag) (s
 
 		userData = string(data)
 	}
+	/*	if s.UserDataFile != "" {
+		data, err := ioutil.ReadFile(s.UserDataFile)
+		if err != nil {
+			return "", err
+		}
 
+		userData = string(data)
+	}*/
 	if userData != "" {
 		userData = base64.StdEncoding.EncodeToString([]byte(userData))
 	}
+	/*if userData != "" {
+		_, base64DecodeError := base64.StdEncoding.DecodeString(userData)
+		if base64DecodeError == nil {
+			s.UserData = userData
+		} else {
+			s.UserData = base64.StdEncoding.EncodeToString([]byte(userData))
+		}
+	}*/
+	/*if a := userData; a != "" {
+		_, base64DecodeError := base64.StdEncoding.DecodeString(a)
+		if base64DecodeError == nil {
+			s.UserData = a
+		} else {
+			s.UserData = base64.StdEncoding.EncodeToString([]byte(a))
+		}
+	}*/
 
 	return userData, nil
 

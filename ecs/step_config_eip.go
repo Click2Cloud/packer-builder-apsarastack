@@ -3,6 +3,7 @@ package ecs
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/errors"
 	"github.com/hashicorp/packer/common/uuid"
@@ -70,6 +71,11 @@ func (s *stepConfigApsaraStackEIP) Run(ctx context.Context, state multistep.Stat
 	}
 
 	associateEipAddressRequest := ecs.CreateAssociateEipAddressRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		associateEipAddressRequest.Scheme = "https"
+	} else {
+		associateEipAddressRequest.Scheme = "http"
+	}
 	associateEipAddressRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	associateEipAddressRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -106,6 +112,11 @@ func (s *stepConfigApsaraStackEIP) Cleanup(state multistep.StateBag) {
 	ui := state.Get("ui").(packer.Ui)
 
 	unassociateEipAddressRequest := ecs.CreateUnassociateEipAddressRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		unassociateEipAddressRequest.Scheme = "https"
+	} else {
+		unassociateEipAddressRequest.Scheme = "http"
+	}
 	unassociateEipAddressRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	unassociateEipAddressRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -120,6 +131,11 @@ func (s *stepConfigApsaraStackEIP) Cleanup(state multistep.StateBag) {
 	}
 
 	releaseEipAddressRequest := ecs.CreateReleaseEipAddressRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		releaseEipAddressRequest.Scheme = "https"
+	} else {
+		releaseEipAddressRequest.Scheme = "http"
+	}
 	releaseEipAddressRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	releaseEipAddressRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 	releaseEipAddressRequest.AllocationId = s.allocatedId
@@ -131,6 +147,11 @@ func (s *stepConfigApsaraStackEIP) Cleanup(state multistep.StateBag) {
 func (s *stepConfigApsaraStackEIP) waitForEipStatus(client *ClientWrapper, state multistep.StateBag, regionId string, allocationId string, expectedStatus string) error {
 	describeEipAddressesRequest := ecs.CreateDescribeEipAddressesRequest()
 	config := state.Get("config").(*Config)
+	if strings.ToLower(config.Protocol) == "https" {
+		describeEipAddressesRequest.Scheme = "https"
+	} else {
+		describeEipAddressesRequest.Scheme = "http"
+	}
 	describeEipAddressesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	describeEipAddressesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -172,6 +193,11 @@ func (s *stepConfigApsaraStackEIP) buildAllocateEipAddressRequest(state multiste
 	instance := state.Get("instance").(*ecs.Instance)
 	config := state.Get("config").(*Config)
 	request := ecs.CreateAllocateEipAddressRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		request.Scheme = "https"
+	} else {
+		request.Scheme = "http"
+	}
 	request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 

@@ -121,6 +121,7 @@ func checkImageDisksSettings() builderT.TestCheckFunc {
 		//config := state.Get("config").(*Config)
 
 		describeImagesRequest := ecs.CreateDescribeImagesRequest()
+
 		describeImagesRequest.Headers = map[string]string{"RegionId": "cn-wulan-env82-d01"}
 		describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": "EuKRGrBTs7ZUyg2AvsmQ7OrwXQrkTq", "Product": "ecs", "Department": "11", "ResourceGroup": "27"}
 

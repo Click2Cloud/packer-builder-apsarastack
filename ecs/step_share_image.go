@@ -3,6 +3,7 @@ package ecs
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 	"github.com/hashicorp/packer/helper/multistep"
@@ -22,6 +23,11 @@ func (s *stepShareApsaraStackImage) Run(ctx context.Context, state multistep.Sta
 
 	for regionId, imageId := range ApsaraStackImages {
 		modifyImageShareRequest := ecs.CreateModifyImageSharePermissionRequest()
+		if strings.ToLower(config.Protocol) == "https" {
+			modifyImageShareRequest.Scheme = "https"
+		} else {
+			modifyImageShareRequest.Scheme = "http"
+		}
 		modifyImageShareRequest.Headers = map[string]string{"RegionId": s.RegionId}
 		modifyImageShareRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -54,6 +60,11 @@ func (s *stepShareApsaraStackImage) Cleanup(state multistep.StateBag) {
 
 	for regionId, imageId := range ApsaraStackImages {
 		modifyImageShareRequest := ecs.CreateModifyImageSharePermissionRequest()
+		if strings.ToLower(config.Protocol) == "https" {
+			modifyImageShareRequest.Scheme = "https"
+		} else {
+			modifyImageShareRequest.Scheme = "http"
+		}
 		modifyImageShareRequest.Headers = map[string]string{"RegionId": s.RegionId}
 		modifyImageShareRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 

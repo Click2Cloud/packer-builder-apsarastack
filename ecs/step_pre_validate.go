@@ -3,10 +3,10 @@ package ecs
 import (
 	"context"
 	"fmt"
-
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 	"github.com/hashicorp/packer/helper/multistep"
 	"github.com/hashicorp/packer/packer"
+	"strings"
 )
 
 type stepPreValidate struct {
@@ -71,8 +71,13 @@ func (s *stepPreValidate) validateDestImageName(state multistep.StateBag) error 
 	ui.Say("Prevalidating image name...")
 
 	describeImagesRequest := ecs.CreateDescribeImagesRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		describeImagesRequest.Scheme = "https"
+	} else {
+		describeImagesRequest.Scheme = "http"
+	}
 	describeImagesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
-	describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs","Department": config.Department, "ResourceGroup": config.ResourceGroup}
+	describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
 	describeImagesRequest.RegionId = config.ApsaraStackRegion
 	describeImagesRequest.ImageName = s.ApsaraStackDestImageName

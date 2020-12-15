@@ -2,13 +2,13 @@ package ecs
 
 import (
 	"fmt"
-	"github.com/aliyun/alibaba-cloud-sdk-go/services/vpc"
-	"github.com/hashicorp/packer/helper/multistep"
-	"time"
-
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/errors"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
+	"github.com/aliyun/alibaba-cloud-sdk-go/services/vpc"
+	"github.com/hashicorp/packer/helper/multistep"
+	"strings"
+	"time"
 )
 
 type ClientWrapper struct {
@@ -209,8 +209,14 @@ func (c *ClientWrapper) WaitForInstanceStatus(regionId string, instanceId string
 		RequestFunc: func() (responses.AcsResponse, error) {
 			config := state.Get("config").(*Config)
 			request := ecs.CreateDescribeInstancesRequest()
+			if strings.ToLower(config.Protocol) == "https" {
+				request.Scheme = "https"
+			} else {
+				request.Scheme = "http"
+			}
+
 			request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
-			request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs","Department": config.Department, "ResourceGroup": config.ResourceGroup}
+			request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
 			request.RegionId = regionId
 			request.InstanceIds = fmt.Sprintf("[\"%s\"]", instanceId)
@@ -239,8 +245,13 @@ func (c *ClientWrapper) WaitForImageStatus(regionId string, imageId string, expe
 		RequestFunc: func() (responses.AcsResponse, error) {
 			config := state.Get("config").(*Config)
 			request := ecs.CreateDescribeImagesRequest()
+			if strings.ToLower(config.Protocol) == "https" {
+				request.Scheme = "https"
+			} else {
+				request.Scheme = "http"
+			}
 			request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
-			request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs","Department": config.Department, "ResourceGroup": config.ResourceGroup}
+			request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 			request.ImageOwnerAlias = "self"
 			request.RegionId = regionId
 			request.ImageId = imageId
@@ -273,6 +284,11 @@ func (c *ClientWrapper) WaitForSnapshotStatus(regionId string, snapshotId string
 		RequestFunc: func() (responses.AcsResponse, error) {
 			config := state.Get("config").(*Config)
 			request := ecs.CreateDescribeSnapshotsRequest()
+			if strings.ToLower(config.Protocol) == "https" {
+				request.Scheme = "https"
+			} else {
+				request.Scheme = "http"
+			}
 			request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 			request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 

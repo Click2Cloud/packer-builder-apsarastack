@@ -155,4 +155,3 @@ func TestRunConfigPrepare_DisableStopInstance(t *testing.T) {
 		t.Fatalf("invalid value, expected: %t, actul: %t", false, c.DisableStopInstance)
 	}
 }
-

@@ -7,11 +7,11 @@ import (
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/endpoints"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
-	//"github.com/aliyun/packer-builder-apsarastack/ascm"
-	"github.com/aliyun/packer-builder-apsarastack/rg"
+	"github.com/aliyun/packer-builder-apsarastack/ascm"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	//"github.com/aliyun/alibaba-cloud-sdk-go/sdk/auth/credentials"
 	//"github.com/aliyun/alibaba-cloud-sdk-go/sdk/endpoints"
@@ -51,6 +51,7 @@ type ApsaraStackAccessConfig struct {
 	// ApsaraStack shared credentials file path. If this file exists, access and
 	// secret keys will be read from this file.
 	ApsaraStackSharedCredentialsFile string `mapstructure:"shared_credentials_file" required:"false"`
+	Protocol                         string `mapstructure:"protocol" required:"false"`
 
 	// STS access token, can be set through template or by exporting as
 	// environment variable such as `export SECURITY_TOKEN=value`.
@@ -244,6 +245,11 @@ func (c *ApsaraStackAccessConfig) getSupportedRegions() ([]string, error) {
 	}
 
 	regionsRequest := ecs.CreateDescribeRegionsRequest()
+	if strings.ToLower(c.Protocol) == "https" {
+		regionsRequest.Scheme = "https"
+	} else {
+		regionsRequest.Scheme = "http"
+	}
 	regionsRequest.Headers = map[string]string{"RegionId": c.ApsaraStackRegion}
 	regionsRequest.QueryParams = map[string]string{"AccessKeySecret": c.ApsaraStackSecretKey, "Product": "ecs", "Department": c.Department, "ResourceGroup": c.ResourceGroup}
 
@@ -332,6 +338,7 @@ func (c *ApsaraStackAccessConfig) getSdkConfig() *sdk.Config {
 		WithDebug(false).
 		WithHttpTransport(c.getTransport()).
 		WithScheme("http")
+
 }
 
 func (c *ApsaraStackAccessConfig) getTransport() *http.Transport {
@@ -347,26 +354,26 @@ func (c *ApsaraStackAccessConfig) getTransport() *http.Transport {
 func getResourceCredentials(config *ApsaraStackAccessConfig) (string, string, error) {
 	endpoint := config.Endpoint
 	if endpoint == "" {
-		return "", "", fmt.Errorf("unable to initialize the rg client: endpoint or domain is not provided for rg service")
+		return "", "", fmt.Errorf("unable to initialize the ascm client: endpoint or domain is not provided for ascm service")
 	}
 	if endpoint != "" {
 		//endpoints.AddEndpointMapping(config.ApsaraStackRegion, string(connectivity.ASCMCode), endpoint)
 		endpoints.AddEndpointMapping(config.ApsaraStackRegion, "ECS", config.Endpoint)
 	}
-	rgClient, err := sdk.NewClientWithAccessKey(config.ApsaraStackRegion, config.ApsaraStackAccessKey, config.ApsaraStackSecretKey)
+	ascmClient, err := sdk.NewClientWithAccessKey(config.ApsaraStackRegion, config.ApsaraStackAccessKey, config.ApsaraStackSecretKey)
 	if err != nil {
-		return "", "", fmt.Errorf("unable to initialize the client: %#v", err)
+		return "", "", fmt.Errorf("unable to initialize the ascm client: %#v", err)
 	}
-	rgClient.AppendUserAgent(Packer, version.FormattedVersion())
-	rgClient.SetReadTimeout(DefaultRequestReadTimeout)
+	ascmClient.AppendUserAgent(Packer, version.FormattedVersion())
+	ascmClient.SetReadTimeout(DefaultRequestReadTimeout)
 	/*
 		ascmClient.AppendUserAgent(connectivity.Terraform, connectivity.TerraformVersion)
 		ascmClient.AppendUserAgent(connectivity.Provider, connectivity.ProviderVersion)
 		ascmClient.AppendUserAgent(connectivity.Module, config.ConfigurationSource)*/
-	rgClient.SetHTTPSInsecure(config.AS_Insecure)
-	rgClient.Domain = endpoint
+	ascmClient.SetHTTPSInsecure(config.AS_Insecure)
+	ascmClient.Domain = endpoint
 	if config.Proxy != "" {
-		rgClient.SetHttpProxy(config.Proxy)
+		ascmClient.SetHttpProxy(config.Proxy)
 	}
 	if config.ResourceSetName == "" {
 		return "", "", fmt.Errorf("errror while fetching resource group details, resource group set name can not be empty")
@@ -374,14 +381,22 @@ func getResourceCredentials(config *ApsaraStackAccessConfig) (string, string, er
 	request := requests.NewCommonRequest()
 	request.RegionId = config.ApsaraStackRegion
 	request.Method = "GET"         // Set request method
-	request.Product = "rg"         // Specify product
+	request.Product = "ascm"       // Specify product
 	request.Domain = endpoint      // Location Service will not be enabled if the host is specified. For example, service with a Certification type-Bearer Token should be specified
 	request.Version = "2019-05-10" // Specify product version
-	request.Scheme = "http"        // Set request scheme. Default: http
+
+	//request.Scheme = "http"        // Set request scheme. Default: http
+	if strings.ToLower(config.Protocol) == "https" {
+		request.Scheme = "https"
+	} else {
+		request.Scheme = "http"
+	}
+	request.SetHTTPSInsecure(true)
 	request.ApiName = "ListResourceGroup"
+	request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	request.QueryParams = map[string]string{
 		"AccessKeySecret": config.ApsaraStackSecretKey,
-		"Product":         "rg",
+		"Product":         "ascm",
 		//"Department":        config.Department,
 		//"ResourceGroup":     config.ResourceGroup,
 		"RegionId":          config.ApsaraStackRegion,
@@ -392,18 +407,18 @@ func getResourceCredentials(config *ApsaraStackAccessConfig) (string, string, er
 	}
 	resp := responses.BaseResponse{}
 	request.TransToAcsRequest()
-	err = rgClient.DoAction(request, &resp)
+	err = ascmClient.DoAction(request, &resp)
 	if err != nil {
 		return "", "", err
 	}
-	response := &rg.ResourceGroup{}
+	response := &ascm.ResourceGroup{}
 	err = json.Unmarshal(resp.GetHttpContentBytes(), response)
 
 	if len(response.Data) != 1 || response.Code != "200" {
 		if len(response.Data) == 0 {
 			return "", "", fmt.Errorf("resource group ID and organization not found for resource set %s", config.ResourceSetName)
 		}
-		return "", "", fmt.Errorf("unable to initialize the  client: department or resource_group is not provided")
+		return "", "", fmt.Errorf("unable to initialize the ascm client: department or resource_group is not provided")
 	}
 
 	log.Printf("[INFO] Get Resource Group Details Succssfull for Resource set: %s : Department: %s, ResourceGroupId: %s", config.ResourceSetName, fmt.Sprint(response.Data[0].OrganizationID), fmt.Sprint(response.Data[0].ResourceGroupID))

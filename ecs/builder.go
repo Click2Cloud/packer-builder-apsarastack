@@ -167,7 +167,8 @@ func (b *Builder) Run(ctx context.Context, ui packer.Ui, hook packer.Hook) (pack
 			ApsaraStackImageName:                 b.config.ApsaraStackImageName,
 			ApsaraStackImageDestinationRegions:   b.config.ApsaraStackImageConfig.ApsaraStackImageDestinationRegions,
 			ApsaraStackImageDestinationNames:     b.config.ApsaraStackImageConfig.ApsaraStackImageDestinationNames,
-		})
+		},
+	)
 
 	if b.config.ApsaraStackImageIgnoreDataDisks {
 		steps = append(steps, &stepCreateApsaraStackSnapshot{

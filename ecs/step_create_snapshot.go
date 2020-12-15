@@ -3,6 +3,7 @@ package ecs
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/errors"
@@ -23,6 +24,11 @@ func (s *stepCreateApsaraStackSnapshot) Run(ctx context.Context, state multistep
 	instance := state.Get("instance").(*ecs.Instance)
 
 	describeDisksRequest := ecs.CreateDescribeDisksRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		describeDisksRequest.Scheme = "https"
+	} else {
+		describeDisksRequest.Scheme = "http"
+	}
 	describeDisksRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	describeDisksRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -40,6 +46,12 @@ func (s *stepCreateApsaraStackSnapshot) Run(ctx context.Context, state multistep
 	}
 
 	createSnapshotRequest := ecs.CreateCreateSnapshotRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		createSnapshotRequest.Scheme = "https"
+	} else {
+		createSnapshotRequest.Scheme = "http"
+	}
+
 	createSnapshotRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	createSnapshotRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -90,6 +102,12 @@ func (s *stepCreateApsaraStackSnapshot) Cleanup(state multistep.StateBag) {
 	ui.Say("Deleting the snapshot because of cancellation or error...")
 
 	deleteSnapshotRequest := ecs.CreateDeleteSnapshotRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		deleteSnapshotRequest.Scheme = "https"
+	} else {
+		deleteSnapshotRequest.Scheme = "http"
+	}
+
 	deleteSnapshotRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	deleteSnapshotRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 

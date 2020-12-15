@@ -3,6 +3,7 @@ package ecs
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
@@ -20,6 +21,11 @@ func (s *stepRunApsaraStackInstance) Run(ctx context.Context, state multistep.St
 	instance := state.Get("instance").(*ecs.Instance)
 
 	startInstanceRequest := ecs.CreateStartInstanceRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		startInstanceRequest.Scheme = "https"
+	} else {
+		startInstanceRequest.Scheme = "http"
+	}
 	startInstanceRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	startInstanceRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -52,8 +58,13 @@ func (s *stepRunApsaraStackInstance) Cleanup(state multistep.StateBag) {
 	instance := state.Get("instance").(*ecs.Instance)
 
 	describeInstancesRequest := ecs.CreateDescribeInstancesRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		describeInstancesRequest.Scheme = "https"
+	} else {
+		describeInstancesRequest.Scheme = "http"
+	}
 	describeInstancesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
-	describeInstancesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs","Department": config.Department, "ResourceGroup": config.ResourceGroup}
+	describeInstancesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
 	describeInstancesRequest.InstanceIds = fmt.Sprintf("[\"%s\"]", instance.InstanceId)
 	instancesResponse, _ := client.DescribeInstances(describeInstancesRequest)
@@ -65,6 +76,11 @@ func (s *stepRunApsaraStackInstance) Cleanup(state multistep.StateBag) {
 	instanceAttribute := instancesResponse.Instances.Instance[0]
 	if instanceAttribute.Status == InstanceStatusStarting || instanceAttribute.Status == InstanceStatusRunning {
 		stopInstanceRequest := ecs.CreateStopInstanceRequest()
+		if strings.ToLower(config.Protocol) == "https" {
+			stopInstanceRequest.Scheme = "https"
+		} else {
+			stopInstanceRequest.Scheme = "http"
+		}
 		stopInstanceRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 		stopInstanceRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 

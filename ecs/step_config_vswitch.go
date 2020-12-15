@@ -3,6 +3,7 @@ package ecs
 import (
 	"context"
 	"fmt"
+	"strings"
 	//"github.com/aliyun/alibaba-cloud-sdk-go/services/vpc"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/responses"
@@ -47,6 +48,11 @@ func (s *stepConfigApsaraStackVSwitch) Run(ctx context.Context, state multistep.
 	}
 	if len(s.VSwitchId) != 0 {
 		describeVSwitchesRequest := vpc.CreateDescribeVSwitchesRequest()
+		if strings.ToLower(config.Protocol) == "https" {
+			describeVSwitchesRequest.Scheme = "https"
+		} else {
+			describeVSwitchesRequest.Scheme = "http"
+		}
 		describeVSwitchesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 		describeVSwitchesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -72,6 +78,11 @@ func (s *stepConfigApsaraStackVSwitch) Run(ctx context.Context, state multistep.
 
 	if s.ZoneId == "" {
 		describeZonesRequest := vpc.CreateDescribeZonesRequest()
+		if strings.ToLower(config.Protocol) == "https" {
+			describeZonesRequest.Scheme = "https"
+		} else {
+			describeZonesRequest.Scheme = "http"
+		}
 		describeZonesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 		describeZonesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -147,6 +158,11 @@ func (s *stepConfigApsaraStackVSwitch) Run(ctx context.Context, state multistep.
 	vSwitchId := createVSwitchResponse.(*vpc.CreateVSwitchResponse).VSwitchId
 
 	describeVSwitchesRequest := vpc.CreateDescribeVSwitchesRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		describeVSwitchesRequest.Scheme = "https"
+	} else {
+		describeVSwitchesRequest.Scheme = "http"
+	}
 	describeVSwitchesRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	describeVSwitchesRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -209,6 +225,11 @@ func (s *stepConfigApsaraStackVSwitch) Cleanup(state multistep.StateBag) {
 	_, err = client.WaitForExpected(&WaitForExpectArgs{
 		RequestFunc: func() (responses.AcsResponse, error) {
 			request := vpc.CreateDeleteVSwitchRequest()
+			if strings.ToLower(config.Protocol) == "https" {
+				request.Scheme = "https"
+			} else {
+				request.Scheme = "http"
+			}
 			request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 			request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -228,6 +249,11 @@ func (s *stepConfigApsaraStackVSwitch) buildCreateVSwitchRequest(state multistep
 	vpcId := state.Get("vpcid").(string)
 	config := state.Get("config").(*Config)
 	request := vpc.CreateCreateVSwitchRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		request.Scheme = "https"
+	} else {
+		request.Scheme = "http"
+	}
 	request.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	request.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "vpc", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 

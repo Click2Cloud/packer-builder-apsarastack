@@ -3,6 +3,7 @@ package ecs
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 	"github.com/hashicorp/packer/helper/multistep"
@@ -32,6 +33,12 @@ func (s *stepConfigApsaraStackPublicIP) Run(ctx context.Context, state multistep
 	}
 
 	allocatePublicIpAddressRequest := ecs.CreateAllocatePublicIpAddressRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		allocatePublicIpAddressRequest.Scheme = "https"
+	} else {
+		allocatePublicIpAddressRequest.Scheme = "http"
+	}
+
 	allocatePublicIpAddressRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	allocatePublicIpAddressRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 

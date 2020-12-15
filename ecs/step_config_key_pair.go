@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"runtime"
+	"strings"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/services/ecs"
 	"github.com/hashicorp/packer/helper/communicator"
@@ -57,6 +58,11 @@ func (s *stepConfigApsaraStackKeyPair) Run(ctx context.Context, state multistep.
 	ui.Say(fmt.Sprintf("Creating temporary keypair: %s", s.Comm.SSHTemporaryKeyPairName))
 
 	createKeyPairRequest := ecs.CreateCreateKeyPairRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		createKeyPairRequest.Scheme = "https"
+	} else {
+		createKeyPairRequest.Scheme = "http"
+	}
 	createKeyPairRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	createKeyPairRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -119,6 +125,11 @@ func (s *stepConfigApsaraStackKeyPair) Cleanup(state multistep.StateBag) {
 	ui.Say("Deleting temporary keypair...")
 
 	deleteKeyPairsRequest := ecs.CreateDeleteKeyPairsRequest()
+	if strings.ToLower(config.Protocol) == "https" {
+		deleteKeyPairsRequest.Scheme = "https"
+	} else {
+		deleteKeyPairsRequest.Scheme = "http"
+	}
 	deleteKeyPairsRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 	deleteKeyPairsRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 

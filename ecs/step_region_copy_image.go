@@ -3,6 +3,7 @@ package ecs
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
@@ -49,6 +50,11 @@ func (s *stepRegionCopyApsaraStackImage) Run(ctx context.Context, state multiste
 		}
 
 		copyImageRequest := ecs.CreateCopyImageRequest()
+		if strings.ToLower(config.Protocol) == "https" {
+			copyImageRequest.Scheme = "https"
+		} else {
+			copyImageRequest.Scheme = "http"
+		}
 		copyImageRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 		copyImageRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 
@@ -100,6 +106,11 @@ func (s *stepRegionCopyApsaraStackImage) Cleanup(state multistep.StateBag) {
 		}
 
 		cancelCopyImageRequest := ecs.CreateCancelCopyImageRequest()
+		if strings.ToLower(config.Protocol) == "https" {
+			cancelCopyImageRequest.Scheme = "https"
+		} else {
+			cancelCopyImageRequest.Scheme = "http"
+		}
 		cancelCopyImageRequest.Headers = map[string]string{"RegionId": config.ApsaraStackRegion}
 		cancelCopyImageRequest.QueryParams = map[string]string{"AccessKeySecret": config.ApsaraStackSecretKey, "Product": "ecs", "Department": config.Department, "ResourceGroup": config.ResourceGroup}
 

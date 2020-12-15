@@ -70,6 +70,11 @@ func (a *Artifact) Destroy() error {
 	sourceImage := make(map[string]*ecs.Image, 1)
 	for regionId, imageId := range a.ApsaraStackImages {
 		describeImagesRequest := ecs.CreateDescribeImagesRequest()
+		if strings.ToLower(a.Config.Protocol) == "https" {
+			describeImagesRequest.Scheme = "https"
+		} else {
+			describeImagesRequest.Scheme = "http"
+		}
 		describeImagesRequest.Headers = map[string]string{"RegionId": a.Config.ApsaraStackRegion}
 		describeImagesRequest.QueryParams = map[string]string{"AccessKeySecret": a.Config.ApsaraStackSecretKey, "Product": "ecs", "Department": a.Config.Department, "ResourceGroup": a.Config.ResourceGroup}
 
@@ -105,6 +110,11 @@ func (a *Artifact) Destroy() error {
 		}
 
 		cancelImageCopyRequest := ecs.CreateCancelCopyImageRequest()
+		if strings.ToLower(a.Config.Protocol) == "https" {
+			cancelImageCopyRequest.Scheme = "https"
+		} else {
+			cancelImageCopyRequest.Scheme = "http"
+		}
 		cancelImageCopyRequest.Headers = map[string]string{"RegionId": a.Config.ApsaraStackRegion}
 		cancelImageCopyRequest.QueryParams = map[string]string{"AccessKeySecret": a.Config.ApsaraStackSecretKey, "Product": "ecs", "Department": a.Config.Department, "ResourceGroup": a.Config.ResourceGroup}
 
@@ -125,6 +135,11 @@ func (a *Artifact) Destroy() error {
 		}
 
 		deleteImageRequest := ecs.CreateDeleteImageRequest()
+		if strings.ToLower(a.Config.Protocol) == "https" {
+			deleteImageRequest.Scheme = "https"
+		} else {
+			deleteImageRequest.Scheme = "http"
+		}
 		deleteImageRequest.Headers = map[string]string{"RegionId": a.Config.ApsaraStackRegion}
 		deleteImageRequest.QueryParams = map[string]string{"AccessKeySecret": a.Config.ApsaraStackSecretKey, "Product": "ecs", "Department": a.Config.Department, "ResourceGroup": a.Config.ResourceGroup}
 
@@ -137,6 +152,11 @@ func (a *Artifact) Destroy() error {
 		//Delete the snapshot of this images
 		for _, diskDevices := range image.DiskDeviceMappings.DiskDeviceMapping {
 			deleteSnapshotRequest := ecs.CreateDeleteSnapshotRequest()
+			if strings.ToLower(a.Config.Protocol) == "https" {
+				deleteSnapshotRequest.Scheme = "https"
+			} else {
+				deleteSnapshotRequest.Scheme = "http"
+			}
 			deleteSnapshotRequest.Headers = map[string]string{"RegionId": a.Config.ApsaraStackRegion}
 			deleteSnapshotRequest.QueryParams = map[string]string{"AccessKeySecret": a.Config.ApsaraStackSecretKey, "Product": "ecs", "Department": a.Config.Department, "ResourceGroup": a.Config.ResourceGroup}
 
@@ -163,6 +183,11 @@ func (a *Artifact) unsharedAccountsOnImages(regionId string, imageId string) []e
 	var errors []error
 	//ig := state.Get("config").(*Config)
 	describeImageShareRequest := ecs.CreateDescribeImageSharePermissionRequest()
+	if strings.ToLower(a.Config.Protocol) == "https" {
+		describeImageShareRequest.Scheme = "https"
+	} else {
+		describeImageShareRequest.Scheme = "http"
+	}
 	describeImageShareRequest.Headers = map[string]string{"RegionId": a.Config.ApsaraStackRegion}
 	describeImageShareRequest.QueryParams = map[string]string{"AccessKeySecret": a.Config.ApsaraStackSecretKey, "Product": "ecs", "Department": a.Config.Department, "ResourceGroup": a.Config.ResourceGroup}
 
@@ -182,6 +207,11 @@ func (a *Artifact) unsharedAccountsOnImages(regionId string, imageId string) []e
 		}
 
 		modifyImageShareRequest := ecs.CreateModifyImageSharePermissionRequest()
+		if strings.ToLower(a.Config.Protocol) == "https" {
+			modifyImageShareRequest.Scheme = "https"
+		} else {
+			modifyImageShareRequest.Scheme = "http"
+		}
 		modifyImageShareRequest.Headers = map[string]string{"RegionId": a.Config.ApsaraStackRegion}
 		modifyImageShareRequest.QueryParams = map[string]string{"AccessKeySecret": a.Config.ApsaraStackSecretKey, "Product": "ecs", "Department": a.Config.Department, "ResourceGroup": a.Config.ResourceGroup}
 
