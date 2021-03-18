@@ -163,6 +163,9 @@ func (s *stepCreateApsaraStackImage) buildCreateImageRequest(state multistep.Sta
 		instance := state.Get("instance").(*ecs.Instance)
 		request.InstanceId = instance.InstanceId
 	}
-
+	ui := state.Get("ui").(packer.Ui)
+	ui.Say("[INFO] Waiting for 60 seconds before image creation...")
+	time.Sleep(60 * time.Second)
+	ui.Say("Starting image creation...")
 	return request
 }
